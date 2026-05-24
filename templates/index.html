@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>FinBot AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static',
+          filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>Dashboard</h2>
+
+        <div class="card">📈 SIP Calculator</div>
+
+        <div class="card">💳 EMI Calculator</div>
+
+        <div class="card">💰 Lumpsum</div>
+
+        <div class="card">📊 Brokerage</div>
+
+    </div>
+
+
+
+    <!-- CHAT SECTION -->
+
+    <div class="chat-section">
+
+        <!-- HEADER -->
+
+        <div class="chat-header">
+
+            <div class="header-left">
+
+                <img src="{{ url_for('static',
+                filename='images/bot.png') }}"
+                alt="Bot">
+
+                <div>
+
+                    <h1>FinBot AI</h1>
+
+                    <p>Your Conversational Finance Assistant</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CHAT AREA -->
+
+        <div id="chat-box">
+
+            <div class="bot-message">
+
+                👋 Hello! I’m FinBot AI.
+                <br><br>
+
+                You can:
+                <br>
+                • Calculate SIP
+                <br>
+                • Calculate EMI
+                <br>
+                • Check Brokerage
+                <br>
+                • Ask Finance Questions
+
+            </div>
+
+        </div>
+
+
+
+        <!-- INPUT -->
+
+        <div class="input-area">
+
+            <input type="text"
+                   id="user-input"
+                   placeholder="Ask something...">
+
+            <button onclick="sendMessage()">
+
+                Send
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="{{ url_for('static',
+filename='script.js') }}"></script>
+
+</body>
+</html>
