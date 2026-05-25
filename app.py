@@ -7,6 +7,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from Calculators.sip import calculate_sip
 from Calculators.emi import calculate_emi
+from Calculators.lumpsum import calculate_lumpsum
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -198,12 +199,47 @@ Please provide:
 
     elif any(word in filtered_words for word in lumpsum_keywords):
 
-        bot_reply = """
-Sure! I can help you with Lumpsum calculations.
+        numbers = re.findall(r'\d+', message)
+
+
+        if len(numbers) >= 3:
+
+            investment = int(numbers[0])
+
+            annual_rate = int(numbers[1])
+
+            years = int(numbers[2])
+
+
+            result = calculate_lumpsum(
+
+                investment,
+
+                annual_rate,
+
+                years
+            )
+
+
+            bot_reply = f"""
+
+Based on your lumpsum investment:
+
+• Future Value: ₹{result['future_value']}
+
+• Estimated Returns: ₹{result['estimated_returns']}
+
+This investment could grow significantly over the long term.
+"""
+
+
+        else:
+
+            bot_reply = """
 
 Please provide:
 • Investment amount
-• Expected annual return
+• Expected return rate
 • Investment duration
 """
 
