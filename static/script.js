@@ -82,7 +82,7 @@ async function sendMessage() {
                 max-width:70%;
             ">
 
-                ${data.reply}
+                ${data.reply.replace(/\n/g, "<br>")}
 
             </div>
 

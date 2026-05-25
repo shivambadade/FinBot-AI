@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 import nltk
+import re
+
 
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+from Calculators.sip import calculate_sip
+from Calculators.emi import calculate_emi
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -81,29 +85,103 @@ def chat():
 
     # INTENT DETECTION
 
+
+    # SIP
+
     if any(word in filtered_words for word in sip_keywords):
 
-        bot_reply = """
-Sure! I can help you with SIP calculations.
+        numbers = re.findall(r'\d+', message)
 
-Please provide:
-• Monthly investment amount
-• Expected annual return
-• Investment duration
+
+        if len(numbers) >= 3:
+
+            monthly_investment = int(numbers[0])
+
+            years = int(numbers[1])
+
+            annual_rate = int(numbers[2])
+
+
+            result = calculate_sip(
+
+                monthly_investment,
+
+                annual_rate,
+
+                years
+            )
+
+
+            bot_reply = f"""
+
+Future Value: ₹{result['future_value']}
+
+Total Investment: ₹{result['total_investment']}
+
+Estimated Returns: ₹{result['estimated_returns']}
 """
 
+
+        else:
+
+            bot_reply = """
+
+Please provide:
+• Monthly investment
+• Years
+• Expected return rate
+"""
+
+
+# EMI
+
+    # EMI
 
     elif any(word in filtered_words for word in emi_keywords):
 
-        bot_reply = """
-Sure! I can help you with EMI calculations.
+        numbers = re.findall(r'\d+', message)
+
+
+        if len(numbers) >= 3:
+
+            loan_amount = int(numbers[0])
+
+            years = int(numbers[1])
+
+            annual_rate = int(numbers[2])
+
+
+            result = calculate_emi(
+
+                loan_amount,
+
+                annual_rate,
+
+                years
+            )
+
+
+            bot_reply = f"""
+
+Monthly EMI: ₹{result['monthly_emi']}
+
+Total Payment: ₹{result['total_payment']}
+
+Total Interest: ₹{result['total_interest']}
+"""
+
+
+        else:
+
+            bot_reply = """
 
 Please provide:
 • Loan amount
+• Years
 • Interest rate
-• Loan duration
 """
 
+# Brokerage
 
     elif any(word in filtered_words for word in brokerage_keywords):
 
@@ -116,6 +194,7 @@ Please provide:
 • Buy/Sell details
 """
 
+# Lumpsum
 
     elif any(word in filtered_words for word in lumpsum_keywords):
 
