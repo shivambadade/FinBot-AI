@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import nltk
 import re
+import humanize
 
 
 from nltk.tokenize import word_tokenize
@@ -8,6 +9,7 @@ from nltk.corpus import stopwords
 from Calculators.sip import calculate_sip
 from Calculators.emi import calculate_emi
 from Calculators.lumpsum import calculate_lumpsum
+from Calculators.brokerage import calculate_brokerage
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -115,11 +117,17 @@ def chat():
 
             bot_reply = f"""
 
-Future Value: ₹{result['future_value']}
+Based on your SIP investment plan:
 
-Total Investment: ₹{result['total_investment']}
+• Monthly Investment: ₹{humanize.intcomma(monthly_investment)}
 
-Estimated Returns: ₹{result['estimated_returns']}
+• Estimated Future Value: ₹{humanize.intcomma(round(result['future_value']))}
+
+• Total Investment: ₹{humanize.intcomma(round(result['total_investment']))}
+
+• Estimated Returns: ₹{humanize.intcomma(round(result['estimated_returns']))}
+
+This SIP could help build strong long-term wealth through disciplined monthly investing.
 """
 
 
@@ -164,11 +172,15 @@ Please provide:
 
             bot_reply = f"""
 
-Monthly EMI: ₹{result['monthly_emi']}
+Based on your loan details:
 
-Total Payment: ₹{result['total_payment']}
+• Monthly EMI: ₹{humanize.intcomma(round(result['monthly_emi']))}
 
-Total Interest: ₹{result['total_interest']}
+• Total Payment: ₹{humanize.intcomma(round(result['total_payment']))}
+
+• Total Interest: ₹{humanize.intcomma(round(result['total_interest']))}
+
+You would need to pay approximately ₹{humanize.intcomma(round(result['monthly_emi']))} every month during the loan tenure.
 """
 
 
@@ -186,13 +198,45 @@ Please provide:
 
     elif any(word in filtered_words for word in brokerage_keywords):
 
-        bot_reply = """
-Sure! I can help you with Brokerage calculations.
+        numbers = re.findall(r'\d+\.?\d*', message)
+
+
+        if len(numbers) >= 2:
+
+            trade_amount = float(numbers[0])
+
+            brokerage_rate = float(numbers[1])
+
+
+            result = calculate_brokerage(
+
+                trade_amount,
+
+                brokerage_rate
+            )
+
+
+            bot_reply = f"""
+
+Based on your trade details:
+
+• Trade Amount: ₹{humanize.intcomma(round(result['trade_amount']))}
+
+• Brokerage Rate: {result['brokerage_rate']}%
+
+• Estimated Brokerage Fee: ₹{humanize.intcomma(round(result['brokerage_fee']))}
+
+This is the approximate brokerage charge for your stock market transaction.
+"""
+
+
+        else:
+
+            bot_reply = """
 
 Please provide:
-• Trading amount
-• Quantity
-• Buy/Sell details
+• Trade amount
+• Brokerage percentage
 """
 
 # Lumpsum
@@ -225,11 +269,13 @@ Please provide:
 
 Based on your lumpsum investment:
 
-• Future Value: ₹{result['future_value']}
+• Initial Investment: ₹{humanize.intcomma(round(investment))}
 
-• Estimated Returns: ₹{result['estimated_returns']}
+• Estimated Future Value: ₹{humanize.intcomma(round(result['future_value']))}
 
-This investment could grow significantly over the long term.
+• Estimated Returns: ₹{humanize.intcomma(round(result['estimated_returns']))}
+
+This investment could grow significantly over the long term with consistent annual returns.
 """
 
 
