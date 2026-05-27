@@ -1,121 +1,144 @@
-# FinBot AI — Conversational Financial Chatbot
-
-FinBot AI is a conversational fintech chatbot and financial dashboard hybrid application built using Flask, Python, HTML, CSS, JavaScript, and NLP techniques.
-
-The project combines:
-- Conversational chatbot interaction
-- Financial calculators
-- NLP-based intent detection
-- Interactive fintech dashboard UI
-
-Users can either:
-- Chat naturally with the AI assistant
-OR
-- Directly use financial calculator modules.
+# FinBot AI 
 
 ---
 
-# Features
+## Overview
 
-## Conversational Finance Chatbot
-- Human-like chatbot interface
-- NLP-based intent detection
-- Rule-based conversational processing
+FinBot AI is a Conversational Financial Chatbot developed using Flask, Python, NLP, and SQLite.
 
-## Financial Calculators
+The application combines a fintech dashboard with an intelligent chatbot capable of handling financial calculations such as SIP, EMI, Lumpsum, and Brokerage calculations through natural language conversations.
+
+The chatbot uses NLP preprocessing and intent detection to understand user queries and provide conversational financial responses.
+
+---
+
+## Features
+
+- Conversational Financial Chatbot
 - SIP Calculator
 - EMI Calculator
-- Lumpsum Calculator  (In Progress)
+- Lumpsum Calculator
 - Brokerage Calculator
-
-## Interactive Dashboard
-- Sidebar calculator access
-- Modern fintech UI
-- Responsive chatbot layout
-
-## NLP Integration
-- Tokenization
-- Stopword removal
-- Keyword-based intent detection using NLTK
+- NLP-based Intent Detection
+- SQLite Database Integration
+- Chat History Storage
+- Interactive Fintech Dashboard UI
+- Human-like Conversational Responses
+- Modular Backend Architecture
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-## Backend
 - Python
 - Flask
-- NLTK
-
-## Frontend
 - HTML
 - CSS
 - JavaScript
-
-## Version Control
-- Git
-- GitHub
+- NLTK
+- SQLite
+- Git & GitHub
 
 ---
 
-# Project Structure
+## Project Structure
 
 Finance-Chatbot/
 
-├── app.py
-
-├── calculators/
+│── Calculators/
 │   ├── sip.py
 │   ├── emi.py
 │   ├── lumpsum.py
 │   └── brokerage.py
-
-├── templates/
-│   └── index.html
-
-├── static/
+│
+│── static/
 │   ├── style.css
 │   ├── script.js
 │   └── images/
-
-├── requirements.txt
-
-└── README.md
-
----
-
-# Current Progress
-
-Completed:
-- Chatbot UI
-- Dashboard layout
-- SIP finance engine
-- EMI finance engine
-- NLP preprocessing
-- Intent detection
-- GitHub integration
-
-In Progress:
-- Lumpsum calculator
-- Brokerage calculator
-- Conversational finance responses
-- Graphical/chart outputs
-- Sidebar interaction logic
-- Mobile responsiveness improvements
+│
+│── templates/
+│   └── index.html
+│
+│── app.py
+│── database.py
+│── view_chats.py
+│── requirements.txt
+│── README.md
+│── .gitignore
+│── .env
 
 ---
 
-# Future Enhancements
+## Installation & Setup
 
-- OpenAI integration
-- Smarter NLP intent classification
-- Financial charts and analytics
-- Database integration
-- User authentication system
-- Personalized financial insights
+### Clone Repository
+
+git clone https://github.com/SHIVANGI-2006/FinBot-AI
+
+### Move Into Project Folder
+
+cd FinBot-AI
+
+### Install Dependencies
+
+pip install -r requirements.txt
+
+### Run Database Initialization
+
+python database.py
+
+### Run Flask Application
+
+python app.py
+
+---
+## Example Queries
+
+- Calculate SIP for 5000 monthly for 10 years at 12%
+- Calculate EMI for 500000 loan for 5 years at 8%
+- Calculate lumpsum for 100000 at 12% for 10 years
+- Calculate brokerage for 100000 at 0.5%
 
 ---
 
-# Developed By
+## NLP Workflow
+
+The chatbot performs:
+
+1. Tokenization
+2. Stopword Removal
+3. Intent Detection
+4. Conversational Response Generation
+
+The detected intent is mapped to the appropriate financial calculator module.
+
+---
+
+## Database Integration
+
+SQLite database is used to store:
+
+- User Messages
+- Chatbot Replies
+- Conversation History
+
+The chat history is stored in:
+
+finbot.db
+
+---
+
+## Future Enhancements
+
+- Graphical Financial Outputs
+- Mobile Responsive Design
+- Advanced NLP Models
+- OpenAI API Integration
+- Financial Recommendation System
+- Investment Analytics Dashboard
+
+---
+
+## Developed by : 
 
 Shivangi Kushwaha
