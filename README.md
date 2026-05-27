@@ -43,6 +43,7 @@ The chatbot uses NLP preprocessing and intent detection to understand user queri
 
 ## Project Structure
 
+```plaintext
 Finance-Chatbot/
 
 │── Calculators/
@@ -50,15 +51,15 @@ Finance-Chatbot/
 │   ├── emi.py
 │   ├── lumpsum.py
 │   └── brokerage.py
-│
+
 │── static/
 │   ├── style.css
 │   ├── script.js
 │   └── images/
-│
+
 │── templates/
 │   └── index.html
-│
+
 │── app.py
 │── database.py
 │── view_chats.py
@@ -66,7 +67,7 @@ Finance-Chatbot/
 │── README.md
 │── .gitignore
 │── .env
-
+```
 ---
 
 ## Installation & Setup
