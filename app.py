@@ -10,6 +10,7 @@ from Calculators.sip import calculate_sip
 from Calculators.emi import calculate_emi
 from Calculators.lumpsum import calculate_lumpsum
 from Calculators.brokerage import calculate_brokerage
+from database import save_chat
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -307,6 +308,7 @@ You can ask about:
 • Brokerage
 """
 
+    save_chat(user_message, bot_reply)
 
     return jsonify({
 
