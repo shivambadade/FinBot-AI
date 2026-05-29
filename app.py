@@ -145,8 +145,6 @@ Please provide:
 
 # EMI
 
-    # EMI
-
     elif any(word in filtered_words for word in emi_keywords):
 
         numbers = re.findall(r'\d+', message)
@@ -171,17 +169,16 @@ Please provide:
             )
 
 
-            bot_reply = f"""
+            bot_reply = response = f"""
 
-Based on your loan details:
+Based on your EMI calculation:
 
-• Monthly EMI: ₹{humanize.intcomma(round(result['monthly_emi']))}
+• Monthly EMI: ₹{result['monthly_emi']}
 
-• Total Payment: ₹{humanize.intcomma(round(result['total_payment']))}
+• Total Payment: ₹{result['total_payment']}
 
-• Total Interest: ₹{humanize.intcomma(round(result['total_interest']))}
+• Total Interest: ₹{result['total_interest']}
 
-You would need to pay approximately ₹{humanize.intcomma(round(result['monthly_emi']))} every month during the loan tenure.
 """
 
 
@@ -219,15 +216,14 @@ Please provide:
 
             bot_reply = f"""
 
-Based on your trade details:
+Based on your brokerage calculation:
 
-• Trade Amount: ₹{humanize.intcomma(round(result['trade_amount']))}
+• Gross Profit: ₹{result['gross_profit']}
 
-• Brokerage Rate: {result['brokerage_rate']}%
+• Brokerage Charges: ₹{result['brokerage']}
 
-• Estimated Brokerage Fee: ₹{humanize.intcomma(round(result['brokerage_fee']))}
+• Net Profit: ₹{result['net_profit']}
 
-This is the approximate brokerage charge for your stock market transaction.
 """
 
 
@@ -315,6 +311,92 @@ You can ask about:
         "reply": bot_reply
     })
 
+
+@app.route("/calculate_sip", methods=["POST"])
+
+def calculate_sip_api():
+
+    data = request.get_json()
+
+
+    amount = float(data["amount"])
+
+    years = float(data["years"])
+
+    annual_return = float(data["return_rate"])
+
+
+    result = calculate_sip(
+
+        amount,
+
+        annual_return,
+
+        years
+    )
+
+
+    return jsonify({
+
+        "future_value": result["future_value"],
+
+        "total_investment": result["total_investment"],
+
+        "estimated_returns": result["estimated_returns"]
+    })
+
+@app.route("/calculate_emi", methods=["POST"])
+def emi_route():
+
+    data = request.get_json()
+
+    loan_amount = float(data["loan"])
+    annual_rate = float(data["rate"])
+    years = float(data["years"])
+
+    result = calculate_emi(
+        loan_amount,
+        annual_rate,
+        years
+    )
+
+    return jsonify(result)
+
+@app.route("/calculate_lumpsum", methods=["POST"])
+def lumpsum_route():
+
+    data = request.get_json()
+
+    amount = float(data["amount"])
+    rate = float(data["rate"])
+    years = float(data["years"])
+
+    result = calculate_lumpsum(
+        amount,
+        rate,
+        years
+    )
+
+    return jsonify(result)
+
+@app.route("/calculate_brokerage", methods=["POST"])
+def brokerage_route():
+
+    data = request.get_json()
+
+    buy_price = float(data["buy_price"])
+    sell_price = float(data["sell_price"])
+    quantity = float(data["quantity"])
+    brokerage_percent = float(data["brokerage_percent"])
+
+    result = calculate_brokerage(
+        buy_price,
+        sell_price,
+        quantity,
+        brokerage_percent
+    )
+
+    return jsonify(result)
 
 # RUN FLASK
 

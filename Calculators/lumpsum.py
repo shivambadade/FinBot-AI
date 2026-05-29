@@ -11,7 +11,11 @@ def calculate_lumpsum(investment, annual_rate, years):
 
     return {
 
-        "future_value": round(future_value, 2),
+    "future_value": round(future_value, 2),
 
-        "estimated_returns": round(estimated_returns, 2)
-    }
+    "invested_amount": round(investment, 2),
+
+    "estimated_returns":
+    round(estimated_returns, 2)
+
+}

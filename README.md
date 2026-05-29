@@ -1,142 +1,206 @@
-# FinBot AI 
-
----
+# FinBot AI — Conversational Financial Assistant
 
 ## Overview
 
-FinBot AI is a Conversational Financial Chatbot developed using Flask, Python, NLP, and SQLite.
+FinBot AI is a conversational fintech web application built using Flask, JavaScript, and Python.
+The project combines financial calculators, chatbot interaction, graphical analytics, and AI-ready architecture into a single intelligent dashboard.
 
-The application combines a fintech dashboard with an intelligent chatbot capable of handling financial calculations such as SIP, EMI, Lumpsum, and Brokerage calculations through natural language conversations.
+The application currently supports:
 
-The chatbot uses NLP preprocessing and intent detection to understand user queries and provide conversational financial responses.
+* SIP Calculator
+* EMI Calculator
+* Lumpsum Calculator
+* Brokerage Calculator
+* Interactive financial graphs
+* Conversational chatbot interface
+* Dynamic dashboard navigation
+* Backend API integration using Flask
 
----
-
-## Features
-
-- Conversational Financial Chatbot
-- SIP Calculator
-- EMI Calculator
-- Lumpsum Calculator
-- Brokerage Calculator
-- NLP-based Intent Detection
-- SQLite Database Integration
-- Chat History Storage
-- Interactive Fintech Dashboard UI
-- Human-like Conversational Responses
-- Modular Backend Architecture
+The goal of the project is to create an AI-powered finance assistant capable of helping users calculate investments, analyze returns, and receive intelligent financial suggestions.
 
 ---
 
-## Tech Stack
+# Tech Stack
 
-- Python
-- Flask
-- HTML
-- CSS
-- JavaScript
-- NLTK
-- SQLite
-- Git & GitHub
+## Frontend
+
+* HTML5
+* CSS3
+* JavaScript
+* Chart.js
+
+## Backend
+
+* Python
+* Flask
+
+## Database
+
+* SQLite
+
+## Tools & Libraries
+
+* NLTK
+* Regex (re)
+* JSON
+* Fetch API
+* Git & GitHub
 
 ---
 
-## Project Structure
+# Project Structure
 
-```plaintext
-Finance-Chatbot/
-
-│── Calculators/
+```bash
+FINANCE-CHATBOT/
+│
+├── Calculators/
 │   ├── sip.py
 │   ├── emi.py
 │   ├── lumpsum.py
-│   └── brokerage.py
-
-│── static/
-│   ├── style.css
+│   ├── brokerage.py
+│
+├── static/
 │   ├── script.js
+│   ├── style.css
 │   └── images/
-
-│── templates/
+│
+├── templates/
 │   └── index.html
-
-│── app.py
-│── database.py
-│── view_chats.py
-│── requirements.txt
-│── README.md
-│── .gitignore
-│── .env
+│
+├── app.py
+├── database.py
+├── finbot.db
+├── requirements.txt
+├── README.md
+└── .env
 ```
+
 ---
 
-## Installation & Setup
+# Setup Instructions
 
-### Clone Repository
+## 1. Clone Repository
 
-git clone https://github.com/SHIVANGI-2006/FinBot-AI
+```bash
+git clone https://github.com/SHIVANGI-2006/FinBot-AI.git
+```
 
-### Move Into Project Folder
+---
 
+## 2. Open Project Folder
+
+```bash
 cd FinBot-AI
+```
 
-### Install Dependencies
+---
 
+## 3. Create Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+---
+
+## 4. Activate Virtual Environment
+
+### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+### Mac/Linux
+
+```bash
+source venv/bin/activate
+```
+
+---
+
+## 5. Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-### Run Database Initialization
+---
 
-python database.py
+## 6. Run Flask Server
 
-### Run Flask Application
-
+```bash
 python app.py
-
----
-## Example Queries
-
-- Calculate SIP for 5000 monthly for 10 years at 12%
-- Calculate EMI for 500000 loan for 5 years at 8%
-- Calculate lumpsum for 100000 at 12% for 10 years
-- Calculate brokerage for 100000 at 0.5%
+```
 
 ---
 
-## NLP Workflow
+# Backend Server
 
-The chatbot performs:
+Flask backend runs at:
 
-1. Tokenization
-2. Stopword Removal
-3. Intent Detection
-4. Conversational Response Generation
-
-The detected intent is mapped to the appropriate financial calculator module.
+```bash
+http://127.0.0.1:5000
+```
 
 ---
 
-## Database Integration
+# Frontend Access
 
-SQLite database is used to store:
+Open browser and visit:
 
-- User Messages
-- Chatbot Replies
-- Conversation History
+```bash
+http://127.0.0.1:5000
+```
 
-The chat history is stored in:
-
-finbot.db
+The frontend is rendered using Flask templates.
 
 ---
 
-## Future Enhancements
+# Example Questions for Chatbot
 
-- Graphical Financial Outputs
-- Mobile Responsive Design
-- Advanced NLP Models
-- OpenAI API Integration
-- Financial Recommendation System
-- Investment Analytics Dashboard
+Users can interact with FinBot AI using conversational queries such as:
+
+```text
+Calculate SIP for 5000 monthly for 10 years at 12%
+
+Calculate EMI for 500000 loan for 5 years at 8%
+
+Calculate lumpsum for 100000 at 12% for 10 years
+
+Calculate brokerage for 100000 at 0.5%
+```
+
+---
+
+# Features Implemented
+
+* Dynamic financial calculators
+* Real-time graph generation
+* Interactive dashboard UI
+* Neon fintech theme
+* Chatbot integration
+* Backend API routes
+* Responsive financial panels
+* Financial result visualization
+
+---
+
+# Future Scope
+
+Future versions of FinBot AI will include:
+
+* AI-powered investment recommendations
+* Machine Learning prediction models
+* NLP-based intent detection
+* Personalized finance insights
+* User authentication system
+* Chat history management
+* Stock market API integration
+* Real-time financial news
+* Voice-enabled finance assistant
+* Portfolio risk analysis
+* Advanced analytics dashboard
 
 ---
 

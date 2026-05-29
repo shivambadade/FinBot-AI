@@ -9,6 +9,7 @@
           href="{{ url_for('static',
           filename='style.css') }}">
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -19,17 +20,94 @@
 
     <div class="sidebar">
 
-        <h2>Dashboard</h2>
+    <div class="logo-section">
 
-        <div class="card">📈 SIP Calculator</div>
+        <img src="{{ url_for('static',
+        filename='images/bot.png') }}">
 
-        <div class="card">💳 EMI Calculator</div>
+        <div>
 
-        <div class="card">💰 Lumpsum</div>
+            <h2>FinBot AI</h2>
 
-        <div class="card">📊 Brokerage</div>
+            <p>Your Finance Assistant</p>
+
+        </div>
 
     </div>
+
+
+    <div class="sidebar-menu">
+
+        <div class="menu-item active"
+        onclick="openDashboard()">
+
+            🏠 Dashboard
+
+            <span>Overview & Insights</span>
+
+        </div>
+
+
+        <div class="menu-item"
+        onclick="openSIPPanel()">
+
+            📈 SIP Calculator
+
+            <span>Plan your wealth</span>
+
+        </div>
+
+
+        <div class="menu-item"
+        onclick="openEMIPanel()">
+
+            🏦 EMI Calculator
+
+            <span>Loan planning</span>
+
+        </div>
+
+
+        <div class="menu-item"
+        onclick="openLumpsumPanel()">
+
+            💰 Lumpsum Calculator
+
+            <span>One-time investment</span>
+
+        </div>
+
+
+        <div class="menu-item"
+        onclick="openBrokeragePanel()">
+
+            📊 Brokerage Calculator
+
+            <span>Trading cost analysis</span>
+
+        </div>
+
+
+        <div class="menu-item">
+
+            💬 Chat History
+
+            <span>Your conversations</span>
+
+        </div>
+
+
+        <div class="menu-item">
+
+            ⚙ Settings
+
+            <span>Preferences</span>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 
@@ -37,7 +115,35 @@
 
     <div class="chat-section">
 
+    <div class="topbar">
+
+    <div class="market-chip">
+
+        Live Market:
+        NIFTY 22,531.45
+
+        <span>+0.75%</span>
+
+    </div>
+
+
+    <div class="profile-section">
+
+        <div class="theme-btn">
+
+            ☀
+        </div>
+
+        <img src="{{ url_for('static',
+        filename='images/bot.png') }}">
+
+    </div>
+
+</div>
+
         <!-- HEADER -->
+
+<div id="dashboard-home">
 
         <div class="chat-header">
 
@@ -58,10 +164,16 @@
             </div>
 
         </div>
+</div>
 
+<!-- DYNAMIC DASHBOARD PANEL -->
+
+<div id="dynamic-panel"></div>
 
 
         <!-- CHAT AREA -->
+
+<div id="main-content"></div>
 
         <div id="chat-box">
 
