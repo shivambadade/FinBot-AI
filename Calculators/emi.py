@@ -21,7 +21,7 @@ def calculate_emi(loan_amount, annual_rate, years):
 
 
     return {
-        "emi": round(emi, 2),
+        "monthly_emi": round(emi, 2),
         "total_payment": round(total_payment, 2),
         "total_interest": round(total_interest, 2)
     }

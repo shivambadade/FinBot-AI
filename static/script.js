@@ -114,6 +114,8 @@ document.getElementById("user-input")
 
 function openSIPPanel(){
 
+    setActiveTab("sip-tab");
+
     document.getElementById(
     "dashboard-home"
     ).style.display = "none";
@@ -453,6 +455,8 @@ sipChart = new Chart(ctx, {
 
 function openDashboard(){
 
+    setActiveTab("dashboard-tab");
+
     document.getElementById(
         "dashboard-home"
     ).style.display = "block";
@@ -507,9 +511,15 @@ function openDashboard(){
 
 function openEMIPanel(){
 
+    setActiveTab("emi-tab");
+
     document.getElementById(
         "dashboard-home"
     ).style.display = "none";
+
+    document.getElementById(
+    "main-content"
+    ).innerHTML = "";
 
     const panel =
     document.getElementById(
@@ -660,10 +670,10 @@ async function calculateEMI(){
         "emi-result"
     ).innerText =
     "₹" +
-    Number(data.emi)
+    Number(data.monthly_emi)
     .toLocaleString("en-IN");
 
-    document.getElementById(
+    document.getElementById(    
         "total-payment"
     ).innerText =
     "₹" +
@@ -736,6 +746,8 @@ async function calculateEMI(){
 }
 
 function openLumpsumPanel(){
+
+    setActiveTab("lumpsum-tab");
 
     document.getElementById(
         "dashboard-home"
@@ -1016,6 +1028,8 @@ async function calculateLumpsum(){
 
 function openBrokeragePanel(){
 
+    setActiveTab("brokerage-tab");
+
     document.getElementById(
         "dashboard-home"
     ).style.display = "none";
@@ -1273,4 +1287,166 @@ async function calculateBrokerage(){
             }
         }
     });
+}
+
+function setActiveTab(tabId){
+
+    const tabs =
+        document.querySelectorAll(
+            ".menu-item"
+        );
+
+    tabs.forEach(tab => {
+        tab.classList.remove("active");
+    });
+
+    document.getElementById(
+        tabId
+    ).classList.add("active");
+
+}
+
+
+
+function openHistoryPanel(){
+
+    setActiveTab("history-tab");
+
+    document.getElementById(
+        "dashboard-home"
+    ).style.display = "none";
+
+    document.getElementById(
+        "main-content"
+    ).innerHTML = "";
+
+    const panel =
+        document.getElementById(
+            "dynamic-panel"
+        );
+
+    panel.innerHTML = `
+
+        <div class="history-panel">
+
+            <h1>Chat History</h1>
+
+            <p>
+                Your previous conversations
+                will appear here.
+            </p>
+
+            <div class="history-box">
+
+                <p>No chat history yet.</p>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+async function openHistory() {
+
+    const panel =
+    document.getElementById(
+        "dynamic-panel"
+    );
+
+    document.getElementById(
+        "dashboard-home"
+    ).style.display = "none";
+
+    const response =
+    await fetch("/history");
+
+    const data =
+    await response.json();
+
+    let html = `
+
+        <h1 style="
+            color:white;
+            margin-bottom:20px;
+        ">
+            Chat History
+        </h1>
+
+    `;
+
+    data.history.forEach(chat => {
+
+        html += `
+
+            <div style="
+                background:#16213e;
+                padding:20px;
+                border-radius:15px;
+                margin-bottom:20px;
+                color:white;
+            ">
+
+                <h3>You:</h3>
+
+                <p>${chat[0]}</p>
+
+                <br>
+
+                <h3>FinBot AI:</h3>
+
+                <p>${chat[1]}</p>
+
+            </div>
+
+        `;
+
+    });
+
+    panel.innerHTML = html;
+}
+
+function openSettingsPanel(){
+
+    setActiveTab("settings-tab");
+
+    document.getElementById(
+        "dashboard-home"
+    ).style.display = "none";
+
+    document.getElementById(
+        "main-content"
+    ).innerHTML = "";
+
+    const panel =
+        document.getElementById(
+            "dynamic-panel"
+        );
+
+    panel.innerHTML = `
+
+        <div class="settings-panel">
+
+            <h1>Settings</h1>
+
+            <p>
+                Customize your FinBot AI
+                dashboard settings.
+            </p>
+
+            <div class="settings-box">
+
+                <p>Theme Mode</p>
+
+                <button class="calculate-btn">
+                    Dark Theme
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
 }

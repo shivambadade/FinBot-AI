@@ -1,59 +1,25 @@
 import sqlite3
 
+connection = sqlite3.connect("finbot.db")
 
-def create_database():
+cursor = connection.cursor()
 
-    connection = sqlite3.connect("finbot.db")
+cursor.execute("""
 
-    cursor = connection.cursor()
+CREATE TABLE IF NOT EXISTS chat_history (
 
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    cursor.execute("""
+    user_message TEXT,
 
-        CREATE TABLE IF NOT EXISTS chat_history (
+    bot_reply TEXT
 
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+)
 
-            user_message TEXT,
+""")
 
-            bot_reply TEXT
-        )
+connection.commit()
 
-    """)
+connection.close()
 
-
-    connection.commit()
-
-    connection.close()
-
-
-
-def save_chat(user_message, bot_reply):
-
-    connection = sqlite3.connect("finbot.db")
-
-    cursor = connection.cursor()
-
-
-    cursor.execute("""
-
-        INSERT INTO chat_history (
-
-            user_message,
-
-            bot_reply
-
-        )
-
-        VALUES (?, ?)
-
-    """, (user_message, bot_reply))
-
-
-    connection.commit()
-
-    connection.close()
-
-
-
-create_database()
+print("Database Ready")

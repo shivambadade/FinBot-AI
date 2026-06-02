@@ -2,6 +2,60 @@ from flask import Flask, render_template, request, jsonify
 import nltk
 import re
 import humanize
+import sqlite3  
+
+
+def save_chat(user_message, bot_reply):
+
+    connection = sqlite3.connect("finbot.db")
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+
+        """
+
+        INSERT INTO chat_history (
+
+            user_message,
+
+            bot_reply
+
+        )
+
+        VALUES (?, ?)
+
+        """,
+
+        (user_message, bot_reply)
+
+    )
+
+    connection.commit()
+
+    connection.close()
+
+def get_chat_history():
+
+    connection = sqlite3.connect("finbot.db")
+
+    cursor = connection.cursor()
+
+    cursor.execute("""
+
+        SELECT user_message, bot_reply
+
+        FROM chat_history
+
+        ORDER BY id DESC
+
+    """)
+
+    chats = cursor.fetchall()
+
+    connection.close()
+
+    return chats
 
 
 from nltk.tokenize import word_tokenize
@@ -10,13 +64,22 @@ from Calculators.sip import calculate_sip
 from Calculators.emi import calculate_emi
 from Calculators.lumpsum import calculate_lumpsum
 from Calculators.brokerage import calculate_brokerage
-from database import save_chat
 
 nltk.download('punkt')
 nltk.download('stopwords')
 
 
 app = Flask(__name__)
+
+@app.route("/history")
+
+def history():
+
+    chats = get_chat_history()
+
+    return jsonify({
+        "history": chats
+    })
 
 @app.route('/')
 def home():
@@ -304,7 +367,7 @@ You can ask about:
 • Brokerage
 """
 
-    save_chat(user_message, bot_reply)
+    save_chat(message, bot_reply)
 
     return jsonify({
 
