@@ -263,7 +263,6 @@ async function calculateSIP(){
         document.getElementById("sip-return").value;
 
 
-
     const response = await fetch("/calculate_sip", {
 
         method: "POST",
@@ -449,8 +448,39 @@ sipChart = new Chart(ctx, {
                 }
             }
         }
+        
+        
     }
 });
+
+// SAVE SIP CALCULATION TO DATABASE
+
+const userMessage =
+`SIP Calculation: ₹${amount} monthly for ${years} years at ${returnRate}%`;
+
+const botReply =
+`Estimated Future Value: ₹${data.future_value}`;
+
+fetch("/save-calculation", {
+
+    method: "POST",
+
+    headers: {
+
+        "Content-Type": "application/json"
+
+    },
+
+    body: JSON.stringify({
+
+        user_message: userMessage,
+
+        bot_reply: botReply
+
+    })
+
+});
+
 }
 
 function openDashboard(){
@@ -663,8 +693,9 @@ async function calculateEMI(){
         }
     );
 
-    const data =
-    await response.json();
+    const data = await response.json();
+
+    console.log(data);
 
     document.getElementById(
         "emi-result"
@@ -743,6 +774,35 @@ async function calculateEMI(){
             }
         }
     });
+
+    // SAVE EMI CALCULATION TO DATABASE
+
+const userMessage =
+`EMI Calculation: ₹${loan} loan for ${years} years at ${rate}%`;
+
+const botReply =
+`Monthly EMI: ₹${data.monthly_emi}`;
+
+fetch("/save-calculation", {
+
+    method: "POST",
+
+    headers: {
+
+        "Content-Type": "application/json"
+
+    },
+
+    body: JSON.stringify({
+
+        user_message: userMessage,
+
+        bot_reply: botReply
+
+    })
+
+});
+
 }
 
 function openLumpsumPanel(){
@@ -1024,6 +1084,35 @@ async function calculateLumpsum(){
             }
         }
     });
+
+    // SAVE LUMPSUM CALCULATION TO DATABASE
+
+const userMessage =
+`Lumpsum Calculation: ₹${amount} invested for ${years} years at ${rate}%`;
+
+const botReply =
+`Estimated Future Value: ₹${data.future_value}`;
+
+fetch("/save-calculation", {
+
+    method: "POST",
+
+    headers: {
+
+        "Content-Type": "application/json"
+
+    },
+
+    body: JSON.stringify({
+
+        user_message: userMessage,
+
+        bot_reply: botReply
+
+    })
+
+});
+
 }
 
 function openBrokeragePanel(){
@@ -1287,6 +1376,35 @@ async function calculateBrokerage(){
             }
         }
     });
+
+    // SAVE BROKERAGE CALCULATION TO DATABASE
+
+const userMessage =
+`Brokerage Calculation: Buy ₹${buyPrice}, Sell ₹${sellPrice}, Quantity ${quantity}, Brokerage ${brokeragePercent}%`;
+
+const botReply =
+`Net Profit: ₹${data.net_profit}`;
+
+fetch("/save-calculation", {
+
+    method: "POST",
+
+    headers: {
+
+        "Content-Type": "application/json"
+
+    },
+
+    body: JSON.stringify({
+
+        user_message: userMessage,
+
+        bot_reply: botReply
+
+    })
+
+});
+
 }
 
 function setActiveTab(tabId){

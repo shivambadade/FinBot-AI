@@ -1,25 +1,63 @@
-import sqlite3
+import mysql.connector
 
-connection = sqlite3.connect("finbot.db")
 
-cursor = connection.cursor()
 
-cursor.execute("""
+def get_connection():
 
-CREATE TABLE IF NOT EXISTS chat_history (
+    return mysql.connector.connect(
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+        host="localhost",
 
-    user_message TEXT,
+        user="root",
 
-    bot_reply TEXT
+        password="password",
 
-)
+        database="finbot_ai"
 
-""")
+    )
 
-connection.commit()
 
-connection.close()
 
-print("Database Ready")
+def save_chat(user_message, bot_reply):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    query = """
+
+    INSERT INTO chat_history
+
+    (user_message, bot_reply)
+
+    VALUES (%s, %s)
+
+    """
+
+    values = (user_message, bot_reply)
+
+    cursor.execute(query, values)
+
+    connection.commit()
+
+    connection.close()
+
+
+
+def get_chat_history():
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+
+        "SELECT user_message, bot_reply FROM chat_history"
+
+    )
+
+    chats = cursor.fetchall()
+
+    connection.close()
+
+    return chats

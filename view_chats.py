@@ -1,9 +1,23 @@
-import sqlite3
+import mysql.connector
 
 
-connection = sqlite3.connect("finbot.db")
+
+connection = mysql.connector.connect(
+
+    host="localhost",
+
+    user="root",
+
+    password="password",
+
+    database="finbot_ai"
+
+)
+
+
 
 cursor = connection.cursor()
+
 
 
 cursor.execute("""
@@ -13,7 +27,9 @@ cursor.execute("""
 """)
 
 
+
 rows = cursor.fetchall()
+
 
 
 for row in rows:
@@ -25,6 +41,7 @@ for row in rows:
     print("User:", row[1])
 
     print("Bot:", row[2])
+
 
 
 connection.close()
