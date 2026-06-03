@@ -55,6 +55,7 @@ The goal of the project is to create an AI-powered financial assistant capable o
 
 # Project Structure
 
+```text
 FINANCE-CHATBOT/
 │
 ├── Calculators/
@@ -72,6 +73,7 @@ FINANCE-CHATBOT/
 │   └── index.html
 │
 ├── venv/
+│
 ├── .env
 ├── .env.example
 ├── .gitignore
@@ -82,6 +84,7 @@ FINANCE-CHATBOT/
 ├── view_chats.py
 ├── requirements.txt
 └── README.md
+```
 ---
 
 # Setup Instructions
