@@ -61,7 +61,7 @@ FINANCE-CHATBOT/
 │   ├── sip.py
 │   ├── emi.py
 │   ├── lumpsum.py
-│   ├── brokerage.py
+│   └── brokerage.py
 │
 ├── static/
 │   ├── script.js
@@ -71,16 +71,17 @@ FINANCE-CHATBOT/
 ├── templates/
 │   └── index.html
 │
-├── app.py
-├── database.py
-├── nlp_utils.py
-├── mysql_test.py
-├── requirements.txt
-├── README.md
+├── venv/
 ├── .env
 ├── .env.example
-└── view_chats.py
-
+├── .gitignore
+│
+├── app.py
+├── database.py
+├── mysql_test.py
+├── view_chats.py
+├── requirements.txt
+└── README.md
 ---
 
 # Setup Instructions
