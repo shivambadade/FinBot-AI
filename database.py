@@ -1,18 +1,20 @@
 import mysql.connector
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def get_connection():
 
     return mysql.connector.connect(
 
-        host="localhost",
+        host=os.getenv("MYSQL_HOST"),
 
-        user="root",
+        user=os.getenv("MYSQL_USER"),
 
-        password="password",
+        password=os.getenv("MYSQL_PASSWORD"),
 
-        database="finbot_ai"
+        database=os.getenv("MYSQL_DATABASE")
 
     )
 

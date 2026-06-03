@@ -2,8 +2,7 @@
 
 ## Overview
 
-FinBot AI is a conversational fintech web application built using Flask, JavaScript, and Python.
-The project combines financial calculators, chatbot interaction, graphical analytics, and AI-ready architecture into a single intelligent dashboard.
+FinBot AI is a conversational fintech web application built using Flask, JavaScript, Python, and MySQL. The project combines financial calculators, chatbot interaction, graphical analytics, database integration, and AI-ready architecture into a single intelligent dashboard.
 
 The application currently supports:
 
@@ -15,8 +14,11 @@ The application currently supports:
 * Conversational chatbot interface
 * Dynamic dashboard navigation
 * Backend API integration using Flask
+* MySQL database integration
+* Chat history storage system
+* Financial calculation history tracking
 
-The goal of the project is to create an AI-powered finance assistant capable of helping users calculate investments, analyze returns, and receive intelligent financial suggestions.
+The goal of the project is to create an AI-powered financial assistant capable of helping users calculate investments, analyze returns, store financial interactions, and provide intelligent financial suggestions.
 
 ---
 
@@ -36,7 +38,8 @@ The goal of the project is to create an AI-powered finance assistant capable of 
 
 ## Database
 
-* SQLite
+* MySQL
+* MySQL Workbench
 
 ## Tools & Libraries
 
@@ -44,13 +47,14 @@ The goal of the project is to create an AI-powered finance assistant capable of 
 * Regex (re)
 * JSON
 * Fetch API
+* mysql-connector-python
+* python-dotenv
 * Git & GitHub
 
 ---
 
 # Project Structure
 
-```bash
 FINANCE-CHATBOT/
 │
 ├── Calculators/
@@ -69,11 +73,13 @@ FINANCE-CHATBOT/
 │
 ├── app.py
 ├── database.py
-├── finbot.db
+├── nlp_utils.py
+├── mysql_test.py
 ├── requirements.txt
 ├── README.md
-└── .env
-```
+├── .env
+├── .env.example
+└── view_chats.py
 
 ---
 
@@ -81,25 +87,19 @@ FINANCE-CHATBOT/
 
 ## 1. Clone Repository
 
-```bash
 git clone https://github.com/SHIVANGI-2006/FinBot-AI.git
-```
 
 ---
 
 ## 2. Open Project Folder
 
-```bash
 cd FinBot-AI
-```
 
 ---
 
 ## 3. Create Virtual Environment
 
-```bash
 python -m venv venv
-```
 
 ---
 
@@ -107,31 +107,83 @@ python -m venv venv
 
 ### Windows
 
-```bash
 venv\Scripts\activate
-```
 
 ### Mac/Linux
 
-```bash
 source venv/bin/activate
-```
 
 ---
 
 ## 5. Install Dependencies
 
-```bash
 pip install -r requirements.txt
-```
 
 ---
 
-## 6. Run Flask Server
+# MySQL Database Setup
 
-```bash
-python app.py
+## 1. Open MySQL Workbench
+
+Create a new database:
+
+CREATE DATABASE finbot_ai;
+
+---
+
+## 2. Use Database
+
+USE finbot_ai;
+
+---
+
+## 3. Create Chat History Table
+
+CREATE TABLE chat_history (
+
 ```
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+user_message TEXT,
+
+bot_reply TEXT
+```
+
+);
+
+---
+
+## 4. Configure Database Credentials
+
+Update MySQL credentials inside:
+
+database.py
+
+---
+
+# Environment Variables
+
+Create a `.env` file using `.env.example`
+
+Example:
+
+FLASK_ENV=development
+
+SECRET_KEY=your_secret_key_here
+
+MYSQL_HOST=localhost
+
+MYSQL_USER=root
+
+MYSQL_PASSWORD=your_mysql_password
+
+MYSQL_DATABASE=finbot_ai
+
+---
+
+# Run Flask Server
+
+python app.py
 
 ---
 
@@ -139,9 +191,7 @@ python app.py
 
 Flask backend runs at:
 
-```bash
 http://127.0.0.1:5000
-```
 
 ---
 
@@ -149,9 +199,7 @@ http://127.0.0.1:5000
 
 Open browser and visit:
 
-```bash
 http://127.0.0.1:5000
-```
 
 The frontend is rendered using Flask templates.
 
@@ -161,15 +209,10 @@ The frontend is rendered using Flask templates.
 
 Users can interact with FinBot AI using conversational queries such as:
 
-```text
-Calculate SIP for 5000 monthly for 10 years at 12%
-
-Calculate EMI for 500000 loan for 5 years at 8%
-
-Calculate lumpsum for 100000 at 12% for 10 years
-
-Calculate brokerage for 100000 at 0.5%
-```
+* Calculate SIP for 5000 monthly for 10 years at 12%
+* Calculate EMI for 500000 loan for 5 years at 8%
+* Calculate lumpsum for 100000 at 12% for 10 years
+* Calculate brokerage for 100000 at 0.5%
 
 ---
 
@@ -183,6 +226,11 @@ Calculate brokerage for 100000 at 0.5%
 * Backend API routes
 * Responsive financial panels
 * Financial result visualization
+* MySQL database integration
+* Chat history storage
+* Financial calculation tracking
+* Virtual environment setup
+* Modular calculator architecture
 
 ---
 
@@ -195,15 +243,16 @@ Future versions of FinBot AI will include:
 * NLP-based intent detection
 * Personalized finance insights
 * User authentication system
-* Chat history management
+* Categorized chat history
 * Stock market API integration
 * Real-time financial news
 * Voice-enabled finance assistant
 * Portfolio risk analysis
 * Advanced analytics dashboard
+* Cloud deployment using Render
 
 ---
 
-## Developed by : 
+# Developed By
 
 Shivangi Kushwaha
