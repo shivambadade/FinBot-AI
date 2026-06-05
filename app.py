@@ -2,18 +2,63 @@ from flask import Flask, render_template, request, jsonify
 import nltk
 import re
 import humanize
+import pickle
+
 from database import save_chat, get_chat_history
-
-
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from Calculators.sip import calculate_sip
 from Calculators.emi import calculate_emi
 from Calculators.lumpsum import calculate_lumpsum
 from Calculators.brokerage import calculate_brokerage
+from nltk.stem import PorterStemmer
 
 nltk.download('punkt_tab')
 nltk.download('stopwords')
+
+
+# LOAD NLP MODEL
+
+with open("ml/intent_model.pkl", "rb") as model_file:
+
+    model = pickle.load(model_file)
+
+
+
+with open("ml/vectorizer.pkl", "rb") as vectorizer_file:
+
+    vectorizer = pickle.load(vectorizer_file)
+
+
+stemmer = PorterStemmer()
+
+stop_words = set(stopwords.words("english"))
+
+# Preprocessing function for user input
+
+def preprocess_text(text):
+
+    text = text.lower()
+
+    words = word_tokenize(text)
+
+
+
+    filtered_words = []
+
+
+
+    for word in words:
+
+        if word.isalnum() and word not in stop_words:
+
+            stemmed_word = stemmer.stem(word)
+
+            filtered_words.append(stemmed_word)
+
+
+
+    return " ".join(filtered_words)
 
 
 app = Flask(__name__)
@@ -70,59 +115,11 @@ def chat():
     user_message = request.json['message']
     message = user_message.lower()
 
-
-    words = word_tokenize(message)
-
-    stop_words = set(stopwords.words('english'))
-
-    filtered_words = []
-
-
-    for word in words:
-
-        if word not in stop_words:
-
-            filtered_words.append(word)
-
-
-    print(filtered_words)
-
-    # KEYWORDS
-
-    sip_keywords = [
-
-        "sip",
-        "investment",
-        "monthly",
-        "returns"
-    ]
-
-    emi_keywords = [
-
-        "emi",
-        "loan",
-        "interest"
-    ]
-
-    brokerage_keywords = [
-
-        "brokerage",
-        "trading",
-        "stocks"
-    ]
-
-    lumpsum_keywords = [
-
-        "lumpsum",
-        "deposit"
-    ]
-
-    greeting_keywords = [
-
-        "hello",
-        "hi",
-        "hey"
-    ]
+    # NLP INTENT DETECTION
+    processed_message = preprocess_text(message)
+    message_vector = vectorizer.transform([processed_message])
+    intent = model.predict(message_vector)[0]
+    print("Detected Intent:", intent)
 
 
     # INTENT DETECTION
@@ -130,7 +127,7 @@ def chat():
 
     # SIP
 
-    if any(word in filtered_words for word in sip_keywords):
+    if intent == "sip":
 
         numbers = re.findall(r'\d+', message)
 
@@ -183,7 +180,7 @@ Please provide:
 
 # EMI
 
-    elif any(word in filtered_words for word in emi_keywords):
+    elif intent == "emi":
 
         numbers = re.findall(r'\d+', message)
 
@@ -232,7 +229,7 @@ Please provide:
 
 # Brokerage
 
-    elif any(word in filtered_words for word in brokerage_keywords):
+    elif intent == "brokerage":
 
         numbers = re.findall(r'\d+\.?\d*', message)
 
@@ -276,7 +273,7 @@ Please provide:
 
 # Lumpsum
 
-    elif any(word in filtered_words for word in lumpsum_keywords):
+    elif intent == "lumpsum":
 
         numbers = re.findall(r'\d+', message)
 
@@ -325,9 +322,26 @@ Please provide:
 """
 
 
-    elif any(word in filtered_words for word in greeting_keywords):
+    elif intent == "greeting":
 
         bot_reply = "Hello! I'm FinBot AI."
+
+
+    elif intent == "recommendation":
+
+        bot_reply = """
+Here are some general financial suggestions:
+
+• SIP investments are good for long-term wealth creation.
+
+• Diversified mutual funds can help reduce risk.
+
+• Maintain an emergency fund before high-risk investments.
+
+• Avoid investing all savings into one asset category.
+
+• Long-term disciplined investing usually performs better than short-term trading.
+"""
 
 
     else:
