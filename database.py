@@ -1,25 +1,65 @@
-import sqlite3
+import mysql.connector
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-connection = sqlite3.connect("finbot.db")
 
-cursor = connection.cursor()
+def get_connection():
 
-cursor.execute("""
+    return mysql.connector.connect(
 
-CREATE TABLE IF NOT EXISTS chat_history (
+        host=os.getenv("MYSQL_HOST"),
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user=os.getenv("MYSQL_USER"),
 
-    user_message TEXT,
+        password=os.getenv("MYSQL_PASSWORD"),
 
-    bot_reply TEXT
+        database=os.getenv("MYSQL_DATABASE")
 
-)
+    )
 
-""")
 
-connection.commit()
 
-connection.close()
+def save_chat(user_message, bot_reply):
 
-print("Database Ready")
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    query = """
+
+    INSERT INTO chat_history
+
+    (user_message, bot_reply)
+
+    VALUES (%s, %s)
+
+    """
+
+    values = (user_message, bot_reply)
+
+    cursor.execute(query, values)
+
+    connection.commit()
+
+    connection.close()
+
+
+
+def get_chat_history():
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+
+        "SELECT user_message, bot_reply FROM chat_history"
+
+    )
+
+    chats = cursor.fetchall()
+
+    connection.close()
+
+    return chats
