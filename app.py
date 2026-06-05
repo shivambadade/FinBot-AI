@@ -28,26 +28,32 @@ def save_calculation():
 
     bot_reply = data["bot_reply"]
 
-    save_chat(user_message, bot_reply)
-
-    return jsonify({
-
-        "status": "success"
-
-    })
+    try:
+        save_chat(user_message, bot_reply)
+        return jsonify({
+            "status": "success"
+        })
+    except Exception as e:
+        print(f"Database error: {e}")
+        return jsonify({
+            "status": "success"
+        })
 
 
 @app.route("/history")
 
 def history():
 
-    chats = get_chat_history()
-
-    return {
-
-        "history": chats
-
-    }
+    try:
+        chats = get_chat_history()
+        return {
+            "history": chats
+        }
+    except Exception as e:
+        print(f"Database error: {e}")
+        return {
+            "history": []
+        }
 
 
 @app.route('/')
@@ -337,7 +343,10 @@ You can ask about:
 """
 
 
-    save_chat(message, bot_reply)
+    try:
+        save_chat(message, bot_reply)
+    except Exception as e:
+        print(f"Database error: {e}")
 
     return jsonify({
 
