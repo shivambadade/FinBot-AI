@@ -65,7 +65,7 @@ from Calculators.emi import calculate_emi
 from Calculators.lumpsum import calculate_lumpsum
 from Calculators.brokerage import calculate_brokerage
 
-nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 
