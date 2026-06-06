@@ -6,12 +6,19 @@ def calculate_brokerage(*args, **kwargs):
         brokerage_percent = float(args[1])
 
         brokerage = (trade_amount * brokerage_percent) / 100
+        turnover = trade_amount
+        stt = turnover * 0.001
+        gst = 0.18 * (brokerage + stt)
         gross_profit = trade_amount
-        net_profit = gross_profit - brokerage
+        total_charges = brokerage + stt + gst
+        net_profit = gross_profit - total_charges
 
         return {
             "gross_profit": round(gross_profit, 2),
             "brokerage": round(brokerage, 2),
+            "stt": round(stt, 2),
+            "gst": round(gst, 2),
+            "total_charges": round(total_charges, 2),
             "net_profit": round(net_profit, 2),
         }
 
@@ -36,11 +43,17 @@ def calculate_brokerage(*args, **kwargs):
     turnover = (buy_price * quantity) + (sell_price * quantity)
 
     brokerage = (turnover * brokerage_percent) / 100
+    stt = turnover * 0.001
+    gst = 0.18 * (brokerage + stt)
+    total_charges = brokerage + stt + gst
 
-    net_profit = gross_profit - brokerage
+    net_profit = gross_profit - total_charges
 
     return {
         "gross_profit": round(gross_profit, 2),
         "brokerage": round(brokerage, 2),
+        "stt": round(stt, 2),
+        "gst": round(gst, 2),
+        "total_charges": round(total_charges, 2),
         "net_profit": round(net_profit, 2),
     }
