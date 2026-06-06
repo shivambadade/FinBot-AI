@@ -1,3 +1,16 @@
+function hideAllSections(){
+
+    document.getElementById("dashboard-home").style.display = "none";
+
+    document.getElementById("chat-box").style.display = "none";
+
+    document.querySelector(".input-area").style.display = "none";
+
+    document.getElementById("dynamic-panel").innerHTML = "";
+
+    document.getElementById("main-content").innerHTML = "";
+}
+
 let sipChart;
 
 function formatINR(value){
@@ -580,6 +593,8 @@ function openDashboard(){
 
     setActiveTab("dashboard-tab");
 
+    hideAllSections();
+
     document.getElementById(
         "dashboard-home"
     ).style.display = "block";
@@ -635,6 +650,8 @@ function openDashboard(){
 function openEMIPanel(){
 
     setActiveTab("emi-tab");
+
+    hideAllSections();
 
     document.getElementById(
         "dashboard-home"
@@ -901,6 +918,8 @@ fetch("/save-calculation", {
 function openLumpsumPanel(){
 
     setActiveTab("lumpsum-tab");
+
+    hideAllSections();
 
     document.getElementById(
         "dashboard-home"
@@ -1211,6 +1230,8 @@ fetch("/save-calculation", {
 function openBrokeragePanel(){
 
     setActiveTab("brokerage-tab");
+
+    hideAllSections();
 
     document.getElementById(
         "dashboard-home"
@@ -1523,6 +1544,8 @@ function openHistoryPanel(){
 
     setActiveTab("history-tab");
 
+    hideAllSections();
+
     document.getElementById(
         "dashboard-home"
     ).style.display = "none";
@@ -1621,6 +1644,8 @@ async function openHistory() {
 function openSettingsPanel(){
 
     setActiveTab("settings-tab");
+
+    hideAllSections();
 
     document.getElementById(
         "dashboard-home"

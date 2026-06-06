@@ -1,0 +1,70 @@
+text,intent
+
+calculate sip,sip
+sip calculation,sip
+monthly investment,sip
+invest monthly,sip
+start sip,sip
+mutual fund sip,sip
+sip for 5000,sip
+long term investment,sip
+monthly savings plan,sip
+retirement investment,sip
+
+
+calculate emi,emi
+emi calculation,emi
+loan repayment,emi
+home loan emi,emi
+monthly loan payment,emi
+car loan emi,emi
+education loan emi,emi
+loan interest,emi
+borrow money,emi
+emi for loan,emi
+
+
+calculate brokerage,brokerage
+brokerage charges,brokerage
+trading charges,brokerage
+stock brokerage,brokerage
+buy sell charges,brokerage
+share market brokerage,brokerage
+brokerage fee,brokerage
+stock trading cost,brokerage
+calculate trading fee,brokerage
+brokerage calculator,brokerage
+
+
+calculate lumpsum,lumpsum
+lumpsum investment,lumpsum
+one time investment,lumpsum
+future value investment,lumpsum
+single investment,lumpsum
+invest once,lumpsum
+wealth growth,lumpsum
+investment returns,lumpsum
+fixed investment,lumpsum
+long term wealth,lumpsum
+
+
+hello,greeting
+hi,greeting
+hey,greeting
+good morning,greeting
+good evening,greeting
+how are you,greeting
+who are you,greeting
+what can you do,greeting
+
+
+suggest investment,recommendation
+financial advice,recommendation
+best investment,recommendation
+where should i invest,recommendation
+investment suggestion,recommendation
+safe investment,recommendation
+high return investment,recommendation
+low risk investment,recommendation
+financial planning,recommendation
+money management,recommendation
