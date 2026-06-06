@@ -21,6 +21,22 @@ function formatINR(value){
 
 }
 
+function validateInput(id, min = 0, allowZero = true) {
+    const input = document.getElementById(id);
+    if (!input) return true;
+    const val = Number(input.value);
+    const isInvalid = input.value.trim() === "" || isNaN(val) || val < min || (!allowZero && val === 0);
+    if (isInvalid) {
+        input.style.borderColor = "rgba(255, 93, 108, 0.6)";
+        input.style.boxShadow = "0 0 0 4px rgba(255, 93, 108, 0.15)";
+        return false;
+    } else {
+        input.style.borderColor = "transparent";
+        input.style.boxShadow = "none";
+        return true;
+    }
+}
+
 function setLumpsumQuickAmount(amount){
 
     const input = document.getElementById("lump-amount");
@@ -2007,7 +2023,7 @@ function openLumpsumPanel(){
                     </div>
                 </div>
 
-                <button class="calc-icon-btn" type="button" aria-label="Theme toggle">\u263e</button>
+                <div style="width: 44px; height: 44px; flex-shrink: 0;"></div>
             </div>
 
             <div class="sip-grid">
@@ -2114,19 +2130,20 @@ function openLumpsumPanel(){
                     <div class="value" id="lump-future">\u20B90</div>
                     <p class="description">Estimated future investment value.</p>
 
-                    <div class="summary-grid">
-                        <div class="summary-card">
-                            <h4>Principal</h4>
-                            <p id="lump-invested">\u20B90</p>
+                    <div class="detail-list">
+                        <div class="detail-row">
+                            <span class="label">Principal</span>
+                            <span class="amount positive" id="lump-invested">\u20B90</span>
                         </div>
-
-                        <div class="summary-card">
-                            <h4>Wealth gained</h4>
-                            <p id="lump-returns" style="color: var(--accent-green);">\u20B90</p>
+                        <div class="detail-row">
+                            <span class="label">Wealth gained</span>
+                            <span class="amount positive" id="lump-returns">\u20B90</span>
                         </div>
                     </div>
 
-                    <canvas id="lumpsumChart"></canvas>
+                    <div class="calc-chart">
+                        <canvas id="lumpsumChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2136,6 +2153,10 @@ function openLumpsumPanel(){
 }
 
 async function calculateLumpsum(){
+    const amountVal = validateInput("lump-amount", 0, false);
+    const yearsVal = validateInput("lump-years", 0, false);
+    const rateVal = validateInput("lump-rate", 0, true);
+    if (!amountVal || !yearsVal || !rateVal) return;
 
     const amount = document.getElementById("lump-amount").value;
     const rate = document.getElementById("lump-rate").value;
@@ -2354,7 +2375,7 @@ function openEMIPanel(){
                     </div>
                 </div>
 
-                <button class="calc-icon-btn" type="button" aria-label="Theme toggle">\u263e</button>
+                <div style="width: 44px; height: 44px; flex-shrink: 0;"></div>
             </div>
 
             <div class="calc-grid">
@@ -2489,6 +2510,10 @@ function openEMIPanel(){
 }
 
 async function calculateEMI(){
+    const loanVal = validateInput("emi-loan", 0, false);
+    const yearsVal = validateInput("emi-years", 0, false);
+    const rateVal = validateInput("emi-rate", 0, true);
+    if (!loanVal || !yearsVal || !rateVal) return;
 
     const loan = Number(document.getElementById("emi-loan").value || 0);
     const rate = Number(document.getElementById("emi-rate").value || 0);
@@ -2637,7 +2662,7 @@ function openBrokeragePanel(){
                     </div>
                 </div>
 
-                <button class="calc-icon-btn" type="button" aria-label="Theme toggle">\u263e</button>
+                <div style="width: 44px; height: 44px; flex-shrink: 0;"></div>
             </div>
 
             <div class="calc-grid">
@@ -2782,6 +2807,11 @@ function openBrokeragePanel(){
 }
 
 async function calculateBrokerage(){
+    const buyVal = validateInput("buy-price", 0, false);
+    const sellVal = validateInput("sell-price", 0, false);
+    const quantityVal = validateInput("quantity", 0, false);
+    const brokerageVal = validateInput("brokerage-percent", 0, true);
+    if (!buyVal || !sellVal || !quantityVal || !brokerageVal) return;
 
     const buyPrice = Number(document.getElementById("buy-price").value || 0);
     const sellPrice = Number(document.getElementById("sell-price").value || 0);
@@ -2956,7 +2986,7 @@ function openSIPPanel(){
                     </div>
                 </div>
 
-                <button class="calc-icon-btn" type="button" aria-label="Theme toggle">\u263e</button>
+                <div style="width: 44px; height: 44px; flex-shrink: 0;"></div>
             </div>
 
             <div class="sip-grid">
@@ -3063,19 +3093,20 @@ function openSIPPanel(){
                     <div class="value" id="future-value">\u20B90</div>
                     <p class="description">After 0 years at 0% p.a.</p>
 
-                    <div class="summary-grid">
-                        <div class="summary-card">
-                            <h4>Total invested</h4>
-                            <p id="total-invested">\u20B90</p>
+                    <div class="detail-list">
+                        <div class="detail-row">
+                            <span class="label">Total invested</span>
+                            <span class="amount positive" id="total-invested">\u20B90</span>
                         </div>
-
-                        <div class="summary-card">
-                            <h4>Estimated gains</h4>
-                            <p id="estimated-returns" style="color: var(--accent-green);">\u20B90</p>
+                        <div class="detail-row">
+                            <span class="label">Estimated gains</span>
+                            <span class="amount positive" id="estimated-returns">\u20B90</span>
                         </div>
                     </div>
 
-                    <canvas id="sipChart"></canvas>
+                    <div class="calc-chart">
+                        <canvas id="sipChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3085,6 +3116,10 @@ function openSIPPanel(){
 }
 
 async function calculateSIP(){
+    const amountVal = validateInput("sip-amount", 0, false);
+    const yearsVal = validateInput("sip-years", 0, false);
+    const returnVal = validateInput("sip-return", 0, true);
+    if (!amountVal || !yearsVal || !returnVal) return;
 
     const amount = document.getElementById("sip-amount").value;
     const years = document.getElementById("sip-years").value;

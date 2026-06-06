@@ -1,3 +1,19 @@
+import sys
+import os
+import subprocess
+
+# Auto-execute inside the virtual environment if running globally
+if sys.prefix == sys.base_prefix:
+    venv_python = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv", "Scripts", "python.exe")
+    if os.path.exists(venv_python):
+        print(f"[*] Re-executing app.py within virtual environment: {venv_python}")
+        result = subprocess.run([venv_python] + sys.argv, shell=False)
+        sys.exit(result.returncode)
+
+import warnings
+# Silence scikit-learn version mismatch warnings during unpickling
+warnings.filterwarnings("ignore", category=UserWarning, message=".*Trying to unpickle estimator.*")
+
 from flask import Flask, render_template, request, jsonify
 import nltk
 import re
@@ -13,20 +29,37 @@ from Calculators.lumpsum import calculate_lumpsum
 from Calculators.brokerage import calculate_brokerage
 from nltk.stem import PorterStemmer
 
-nltk.download('punkt_tab')
-nltk.download('stopwords')
+# Add compatibility layer for loading pickle files saved with numpy 2.x inside numpy 1.x environments
+import sys
+import types
+import numpy
+if not hasattr(numpy, '_core'):
+    import numpy.core as _core
+    _core_pkg = types.ModuleType("numpy._core")
+    _core_pkg.__path__ = []  # makes it a package
+    sys.modules["numpy._core"] = _core_pkg
+    for attr_name in dir(_core):
+        attr_val = getattr(_core, attr_name)
+        setattr(_core_pkg, attr_name, attr_val)
+        if isinstance(attr_val, types.ModuleType):
+            sys.modules[f"numpy._core.{attr_name}"] = attr_val
 
+# Check if NLTK resources are already available before attempting download
+for resource, path in [('punkt_tab', 'tokenizers/punkt_tab'), ('stopwords', 'corpora/stopwords')]:
+    try:
+        nltk.data.find(path)
+    except LookupError:
+        try:
+            nltk.download(resource, quiet=True)
+        except Exception as e:
+            print(f"Warning: Could not download NLTK resource '{resource}': {e}")
 
 # LOAD NLP MODEL
 
 with open("ml/intent_model.pkl", "rb") as model_file:
-
     model = pickle.load(model_file)
 
-
-
 with open("ml/vectorizer.pkl", "rb") as vectorizer_file:
-
     vectorizer = pickle.load(vectorizer_file)
 
 

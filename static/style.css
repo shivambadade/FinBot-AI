@@ -184,7 +184,7 @@ input{
 .topbar{
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 28px;
     gap: 16px;
@@ -285,6 +285,18 @@ input{
     z-index: 1;
 }
 
+.welcome-panel,
+.sip-panel,
+.history-panel,
+.settings-panel,
+#chat-box,
+.input-area,
+#main-content {
+    max-width: 1000px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .welcome-panel{
     background:
         linear-gradient(145deg, rgba(12, 17, 29, 0.96), rgba(18, 25, 43, 0.92));
@@ -358,8 +370,9 @@ input{
 .sip-grid{
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 22px;
-    align-items: start;
+    gap: 24px;
+    min-width: 0;
+    align-items: stretch;
 }
 
 .sip-input-card,
@@ -564,11 +577,18 @@ input{
 }
 
 .emi-page .calc-summary .value,
-.emi-page .calc-summary .eyebrow{
+.emi-page .calc-summary .eyebrow,
+.sip-page .calc-summary .value,
+.sip-page .calc-summary .eyebrow,
+.lumpsum-page .calc-summary .value,
+.lumpsum-page .calc-summary .eyebrow{
     color: var(--accent);
 }
 
-.emi-page .calc-summary .eyebrow{
+.emi-page .calc-summary .eyebrow,
+.sip-page .calc-summary .eyebrow,
+.lumpsum-page .calc-summary .eyebrow,
+.brokerage-page .calc-summary .eyebrow{
     color: var(--muted-strong);
 }
 
@@ -576,16 +596,10 @@ input{
     color: var(--accent-green);
 }
 
-.brokerage-page .calc-summary .eyebrow{
-    color: var(--muted-strong);
-}
-
-.brokerage-page .calc-summary{
-    background: linear-gradient(180deg, rgba(26, 20, 14, 0.96), rgba(15, 18, 30, 0.92));
-    border-top: 3px solid rgba(240, 182, 29, 0.75);
-}
-
-.emi-page .calc-summary{
+.brokerage-page .calc-summary,
+.emi-page .calc-summary,
+.sip-page .calc-summary,
+.lumpsum-page .calc-summary{
     background: linear-gradient(180deg, rgba(26, 20, 14, 0.96), rgba(15, 18, 30, 0.92));
     border-top: 3px solid rgba(240, 182, 29, 0.75);
 }
@@ -771,9 +785,10 @@ input{
 
 .calc-grid{
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
-    gap: 20px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
     min-width: 0;
+    align-items: stretch;
 }
 
 .calc-panel{
@@ -983,6 +998,7 @@ input{
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--stroke);
+        overflow: hidden;
     }
 
     .chat-section{
@@ -1053,6 +1069,7 @@ input{
         gap: 10px;
         padding-bottom: 4px;
         scrollbar-width: none;
+        width: 100%;
     }
 
     .sidebar-menu::-webkit-scrollbar{
