@@ -1319,3 +1319,80 @@ input{
         gap: 4px;
     }
 }
+
+/* Light Theme Variables & Overrides */
+body.light-theme {
+    --bg: #f8fafc;
+    --bg-deep: #f1f5f9;
+    --surface: rgba(255, 255, 255, 0.92);
+    --surface-2: rgba(241, 245, 249, 0.95);
+    --surface-3: rgba(226, 232, 240, 0.96);
+    --stroke: rgba(15, 23, 42, 0.08);
+    --stroke-strong: rgba(15, 23, 42, 0.16);
+    --text: #0f172a;
+    --muted: #475569;
+    --muted-strong: #64748b;
+    background:
+        radial-gradient(circle at top, rgba(240, 182, 29, 0.08), transparent 22%),
+        radial-gradient(circle at right top, rgba(23, 208, 122, 0.08), transparent 18%),
+        linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+body.light-theme .sidebar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 245, 249, 0.98));
+}
+
+body.light-theme .menu-item {
+    background: rgba(15, 23, 42, 0.03);
+}
+
+body.light-theme .menu-item:hover {
+    background: rgba(15, 23, 42, 0.05);
+}
+
+body.light-theme .menu-item.active {
+    background: linear-gradient(135deg, rgba(240, 182, 29, 0.92), rgba(176, 123, 6, 0.95));
+    color: #1b1200;
+}
+
+body.light-theme .sip-input-card,
+body.light-theme .sip-result-card,
+body.light-theme .history-panel,
+body.light-theme .settings-panel,
+body.light-theme .calc-shell,
+body.light-theme .calc-summary,
+body.light-theme .calc-panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(241, 245, 249, 0.92));
+}
+
+body.light-theme .sip-input-card input,
+body.light-theme .calc-input input,
+body.light-theme .input-area input {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--stroke-strong);
+    color: var(--text);
+}
+
+body.light-theme .result-box,
+body.light-theme .summary-card,
+body.light-theme .history-box,
+body.light-theme .settings-box,
+body.light-theme .history-card,
+body.light-theme #sipChart,
+body.light-theme #emiChart,
+body.light-theme #lumpsumChart,
+body.light-theme #brokerageChart {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--stroke);
+}
+
+body.light-theme #chat-box {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(241, 245, 249, 0.92));
+}
+
+body.light-theme .bot-message {
+    background: rgba(15, 23, 42, 0.04);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    color: var(--text);
+}
+
