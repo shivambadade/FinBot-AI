@@ -11,7 +11,7 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static',
-          filename='style.css') }}">
+          filename='style.css') }}?v=1.1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -140,6 +140,7 @@
     <div class="chat-section">
 
     <div class="topbar">
+        <div id="topbar-header-container"></div>
         <div class="profile-section">
             <img src="{{ url_for('static', filename='images/bot.png') }}">
         </div>
@@ -224,7 +225,7 @@
 
 
 <script src="{{ url_for('static',
-filename='script.js') }}"></script>
+filename='script.js') }}?v=1.1.0"></script>
 
 </body>
 </html>
