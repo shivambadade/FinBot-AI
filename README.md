@@ -5,79 +5,55 @@
 FinBot AI is a conversational fintech web application built using Flask, JavaScript, Python, and MySQL. The project combines financial calculators, chatbot interaction, graphical analytics, database integration, and AI-ready architecture into a single intelligent dashboard.
 
 The application currently supports:
-
-* SIP Calculator
-* EMI Calculator
-* Lumpsum Calculator
-* Brokerage Calculator
-* Interactive financial graphs
-* Conversational chatbot interface
-* Dynamic dashboard navigation
-* Backend API integration using Flask
-* MySQL database integration
-* Chat history storage system
-* Financial calculation history tracking
-
-The goal of the project is to create an AI-powered financial assistant capable of helping users calculate investments, analyze returns, store financial interactions, and provide intelligent financial suggestions.
+* **SIP Calculator**: Calculate Systematic Investment Plan returns.
+* **EMI Calculator**: Calculate Equated Monthly Installments for loans.
+* **Lumpsum Calculator**: Calculate compound interest on one-time investments.
+* **Brokerage Calculator**: Calculate equity trading brokerage and net profit/loss.
+* **Interactive Financial Graphs**: Powered by Chart.js for data visualization.
+* **Conversational Chatbot Interface**: Preprocessing via NLTK and intent classification via machine learning (scikit-learn).
+* **Dynamic Dashboard Navigation**: Clean, modern glassmorphic UI.
+* **Database Integration**: MySQL backend for storing chat history and tracking calculation logs.
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-## Frontend
+### Frontend
+* HTML5 & CSS3 (Neon Fintech Theme)
+* JavaScript (ES6+)
+* Chart.js (Data Visualization)
 
-* HTML5
-* CSS3
-* JavaScript
-* Chart.js
+### Backend
+* Python 3
+* Flask (Web Framework)
+* NLTK (Natural Language Toolkit)
+* Scikit-Learn (Intent Classification)
 
-## Backend
-
-* Python
-* Flask
-
-## Database
-
+### Database
 * MySQL
-* MySQL Workbench
-
-## Tools & Libraries
-
-* NLTK
-* Regex (re)
-* JSON
-* Fetch API
-* mysql-connector-python
-* python-dotenv
-* Git & GitHub
 
 ---
 
-# Project Structure
+## Project Structure
 
 ```text
-FINANCE-CHATBOT/
-│
+FinBot-AI/
 ├── Calculators/
 │   ├── sip.py
 │   ├── emi.py
 │   ├── lumpsum.py
 │   └── brokerage.py
-│
+├── ml/
+│   ├── intent_model.pkl
+│   └── vectorizer.pkl
 ├── static/
 │   ├── script.js
 │   ├── style.css
 │   └── images/
-│
 ├── templates/
 │   └── index.html
-│
-├── venv/
-│
-├── .env
 ├── .env.example
 ├── .gitignore
-│
 ├── app.py
 ├── database.py
 ├── mysql_test.py
@@ -85,178 +61,88 @@ FINANCE-CHATBOT/
 ├── requirements.txt
 └── README.md
 ```
+
 ---
 
-# Setup Instructions
+## Setup Instructions
 
-## 1. Clone Repository
-
+### 1. Clone the Repository
+```bash
 git clone https://github.com/SHIVANGI-2006/FinBot-AI.git
-
----
-
-## 2. Open Project Folder
-
 cd FinBot-AI
+```
 
----
+### 2. Create and Activate Virtual Environment
+```bash
+# Create environment
+python -m venv .venv
 
-## 3. Create Virtual Environment
+# Activate on Windows
+.venv\Scripts\activate
 
-python -m venv venv
+# Activate on Mac/Linux
+source .venv/bin/activate
+```
 
----
-
-## 4. Activate Virtual Environment
-
-### Windows
-
-venv\Scripts\activate
-
-### Mac/Linux
-
-source venv/bin/activate
-
----
-
-## 5. Install Dependencies
-
+### 3. Install Dependencies
+```bash
 pip install -r requirements.txt
+```
 
----
+### 4. Database Setup
+Ensure you have MySQL running. Create the database and table:
 
-# MySQL Database Setup
-
-## 1. Open MySQL Workbench
-
-Create a new database:
-
+```sql
 CREATE DATABASE finbot_ai;
-
----
-
-## 2. Use Database
-
 USE finbot_ai;
 
----
-
-## 3. Create Chat History Table
-
 CREATE TABLE chat_history (
-
-```
-id INT AUTO_INCREMENT PRIMARY KEY,
-
-user_message TEXT,
-
-bot_reply TEXT
-```
-
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_message TEXT,
+    bot_reply TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
----
+### 5. Environment Variables
+Create a `.env` file in the root directory using the template below:
 
-## 4. Configure Database Credentials
-
-Update MySQL credentials inside:
-
-database.py
-
----
-
-# Environment Variables
-
-Create a `.env` file using `.env.example`
-
-Example:
-
+```env
 FLASK_ENV=development
-
 SECRET_KEY=your_secret_key_here
-
 MYSQL_HOST=localhost
-
 MYSQL_USER=root
-
 MYSQL_PASSWORD=your_mysql_password
-
 MYSQL_DATABASE=finbot_ai
+```
 
----
-
-# Run Flask Server
-
+### 6. Run the Application
+```bash
 python app.py
+```
+Open your browser and navigate to `http://127.0.0.1:5000`.
 
 ---
 
-# Backend Server
+## Chatbot Interaction Examples
 
-Flask backend runs at:
-
-http://127.0.0.1:5000
-
----
-
-# Frontend Access
-
-Open browser and visit:
-
-http://127.0.0.1:5000
-
-The frontend is rendered using Flask templates.
+You can interact with the chatbot in the UI using natural queries:
+* *"Calculate SIP for 5000 monthly for 10 years at 12%"*
+* *"Calculate EMI for 500000 loan for 5 years at 8%"*
+* *"Calculate lumpsum for 100000 at 12% for 10 years"*
+* *"Calculate brokerage for 100000 buy and 110000 sell with 100 shares at 0.05%"*
 
 ---
 
-# Example Questions for Chatbot
+## Future Scope
 
-Users can interact with FinBot AI using conversational queries such as:
-
-* Calculate SIP for 5000 monthly for 10 years at 12%
-* Calculate EMI for 500000 loan for 5 years at 8%
-* Calculate lumpsum for 100000 at 12% for 10 years
-* Calculate brokerage for 100000 at 0.5%
-
----
-
-# Features Implemented
-
-* Dynamic financial calculators
-* Real-time graph generation
-* Interactive dashboard UI
-* Neon fintech theme
-* Chatbot integration
-* Backend API routes
-* Responsive financial panels
-* Financial result visualization
-* MySQL database integration
-* Chat history storage
-* Financial calculation tracking
-* Virtual environment setup
-* Modular calculator architecture
+* AI-powered personalized investment recommendations.
+* Real-time stock market API integrations.
+* User authentication and personalized portfolios.
+* Categorized chat history & exports.
+* Voice-enabled finance assistant.
 
 ---
 
-# Future Scope
-
-Future versions of FinBot AI will include:
-
-* AI-powered investment recommendations
-* Machine Learning prediction models
-* NLP-based intent detection
-* Personalized finance insights
-* User authentication system
-* Categorized chat history
-* Stock market API integration
-* Real-time financial news
-* Voice-enabled finance assistant
-* Portfolio risk analysis
-* Advanced analytics dashboard
-* Cloud deployment using Render
-
----
-
-# Developed By
-
-Shivangi Kushwaha
+## Developed By
+* **Shivangi Kushwaha**
