@@ -12,6 +12,7 @@ from Calculators.emi import calculate_emi
 from Calculators.lumpsum import calculate_lumpsum
 from Calculators.brokerage import calculate_brokerage
 from nltk.stem import PorterStemmer
+from recommendation_engine import generate_recommendation
 
 nltk.download('punkt_tab')
 nltk.download('stopwords')
@@ -166,6 +167,17 @@ Based on your SIP investment plan:
 This SIP could help build strong long-term wealth through disciplined monthly investing.
 """
 
+            recommendation = generate_recommendation(
+
+                "sip",
+
+                monthly_investment,
+
+                years
+
+            )
+
+            bot_reply += recommendation
 
         else:
 
@@ -178,12 +190,11 @@ Please provide:
 """
 
 
-# EMI
+    # EMI
 
     elif intent == "emi":
 
         numbers = re.findall(r'\d+', message)
-
 
         if len(numbers) >= 3:
 
@@ -193,7 +204,6 @@ Please provide:
 
             annual_rate = int(numbers[2])
 
-
             result = calculate_emi(
 
                 loan_amount,
@@ -201,11 +211,10 @@ Please provide:
                 annual_rate,
 
                 years
+
             )
 
-
-            bot_reply = response = f"""
-
+            bot_reply = f"""
 Based on your EMI calculation:
 
 • Monthly EMI: ₹{result['monthly_emi']}
@@ -213,26 +222,35 @@ Based on your EMI calculation:
 • Total Payment: ₹{result['total_payment']}
 
 • Total Interest: ₹{result['total_interest']}
-
 """
 
+            recommendation = generate_recommendation(
+
+                "emi",
+
+                loan_amount,
+
+                years
+
+            )
+
+            bot_reply += recommendation
 
         else:
 
             bot_reply = """
-
 Please provide:
+
 • Loan amount
 • Years
 • Interest rate
 """
 
-# Brokerage
+    # Brokerage
 
     elif intent == "brokerage":
 
         numbers = re.findall(r'\d+\.?\d*', message)
-
 
         if len(numbers) >= 2:
 
@@ -240,17 +258,15 @@ Please provide:
 
             brokerage_rate = float(numbers[1])
 
-
             result = calculate_brokerage(
 
                 trade_amount,
 
                 brokerage_rate
+
             )
 
-
             bot_reply = f"""
-
 Based on your brokerage calculation:
 
 • Gross Profit: ₹{result['gross_profit']}
@@ -258,25 +274,32 @@ Based on your brokerage calculation:
 • Brokerage Charges: ₹{result['brokerage']}
 
 • Net Profit: ₹{result['net_profit']}
-
 """
 
+            recommendation = generate_recommendation(
+
+                "brokerage",
+
+                trade_amount
+
+            )
+
+            bot_reply += recommendation
 
         else:
 
             bot_reply = """
-
 Please provide:
+
 • Trade amount
 • Brokerage percentage
 """
 
-# Lumpsum
+    # Lumpsum
 
     elif intent == "lumpsum":
 
         numbers = re.findall(r'\d+', message)
-
 
         if len(numbers) >= 3:
 
@@ -286,7 +309,6 @@ Please provide:
 
             years = int(numbers[2])
 
-
             result = calculate_lumpsum(
 
                 investment,
@@ -294,11 +316,10 @@ Please provide:
                 annual_rate,
 
                 years
+
             )
 
-
             bot_reply = f"""
-
 Based on your lumpsum investment:
 
 • Initial Investment: ₹{humanize.intcomma(round(investment))}
@@ -310,12 +331,23 @@ Based on your lumpsum investment:
 This investment could grow significantly over the long term with consistent annual returns.
 """
 
+            recommendation = generate_recommendation(
+
+                "lumpsum",
+
+                investment,
+
+                years
+
+            )
+
+            bot_reply += recommendation
 
         else:
 
             bot_reply = """
-
 Please provide:
+
 • Investment amount
 • Expected return rate
 • Investment duration
@@ -350,6 +382,7 @@ Here are some general financial suggestions:
 Sorry, I could not understand your request.
 
 You can ask about:
+
 • SIP
 • EMI
 • Lumpsum
