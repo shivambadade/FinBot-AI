@@ -1584,10 +1584,68 @@ async function calculateBrokerage(){
     });
 }
 
+// Send message function for chatbot
+async function sendMessage() {
+    const userInput = document.getElementById("user-input");
+    const message = userInput.value.trim();
+    
+    if (!message) return;
+    
+    // Add user message to chat
+    const chatBox = document.getElementById("chat-box");
+    const userMessageEl = document.createElement("div");
+    userMessageEl.className = "user-message";
+    userMessageEl.textContent = message;
+    chatBox.appendChild(userMessageEl);
+    
+    // Clear input
+    userInput.value = "";
+    
+    // Scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+    
+    try {
+        // Send to backend
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
+        });
+        
+        const data = await response.json();
+        
+        // Add bot reply to chat
+        const botMessageEl = document.createElement("div");
+        botMessageEl.className = "bot-message";
+        botMessageEl.textContent = data.reply;
+        chatBox.appendChild(botMessageEl);
+        
+        // Scroll to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+    } catch (error) {
+        console.error("Error sending message:", error);
+        const errorEl = document.createElement("div");
+        errorEl.className = "bot-message";
+        errorEl.textContent = "Sorry, there was an error processing your message.";
+        chatBox.appendChild(errorEl);
+    }
+}
+
 // Check stored theme & enter key support on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     const stored = localStorage.getItem("theme-mode");
     if (stored === "light") {
         document.body.classList.add("light-theme");
+    }
+    
+    // Add Enter key support for sending messages
+    const userInput = document.getElementById("user-input");
+    if (userInput) {
+        userInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
     }
 });

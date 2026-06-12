@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import numpy as np
 
 # Auto-execute inside the virtual environment if running globally
 if sys.prefix == sys.base_prefix:
@@ -62,6 +63,16 @@ with open("ml/intent_model.pkl", "rb") as model_file:
 with open("ml/vectorizer.pkl", "rb") as vectorizer_file:
     vectorizer = pickle.load(vectorizer_file)
 
+# LOAD RECOMMENDATION MODEL AND ENCODERS
+
+with open("ml/recommendation_model.pkl", "rb") as rec_model_file:
+    recommendation_model = pickle.load(rec_model_file)
+
+with open("ml/type_encoder.pkl", "rb") as type_enc_file:
+    type_encoder = pickle.load(type_enc_file)
+
+with open("ml/recommendation_encoder.pkl", "rb") as rec_enc_file:
+    recommendation_encoder = pickle.load(rec_enc_file)
 
 stemmer = PorterStemmer()
 
@@ -134,6 +145,302 @@ def history():
         }
 
 
+def get_ml_recommendation(
+
+    amount,
+
+    years,
+
+    investment_type
+
+):
+
+    # ENCODE TYPE
+
+    encoded_type = type_encoder.transform(
+
+        [investment_type]
+
+    )[0]
+
+
+
+    # CREATE INPUT ARRAY
+
+    features = np.array([
+
+        [
+
+            amount,
+
+            years,
+
+            encoded_type
+
+        ]
+
+    ])
+
+
+
+    # PREDICT RECOMMENDATION
+
+    prediction = recommendation_model.predict(
+
+        features
+
+    )[0]
+
+
+
+    # DECODE PREDICTION
+
+    recommendation = recommendation_encoder.inverse_transform(
+
+        [prediction]
+
+    )[0]
+
+
+
+    return recommendation
+
+def format_recommendation_text(
+
+    recommendation
+
+):
+
+    recommendations = {
+
+        "low_risk":
+
+        """
+
+• Low-risk investment strategies may help preserve financial stability.
+
+• Conservative mutual funds or debt-oriented investments may be suitable.
+
+""",
+
+
+
+        "balanced_growth":
+
+        """
+
+• Balanced investment strategies may help combine growth and stability.
+
+• Diversified mutual funds are commonly preferred for moderate-risk investing.
+
+""",
+
+
+
+        "moderate_growth":
+
+        """
+
+• Moderate growth investment strategies may help generate stable long-term returns.
+
+• Diversified SIP investing may help reduce market volatility risks.
+
+""",
+
+
+
+        "equity_growth":
+
+        """
+
+• Equity-oriented investments may provide stronger long-term growth potential.
+
+• Long-term SIP investing may help benefit from market compounding.
+
+""",
+
+
+
+        "aggressive_growth":
+
+        """
+
+• Aggressive growth strategies may suit long-term investors with higher risk tolerance.
+
+• Equity diversification can help manage market volatility.
+
+""",
+
+
+
+        "long_term_equity":
+
+        """
+
+• Long-term equity investing is often associated with wealth creation strategies.
+
+• Consistent investing over longer durations may improve compounding benefits.
+
+""",
+
+
+
+        "diversified_growth":
+
+        """
+
+• Diversified investment allocation may help reduce concentration risk.
+
+• Hybrid and diversified funds may improve portfolio balance.
+
+""",
+
+
+
+        "wealth_creation":
+
+        """
+
+• Long-term disciplined investing may support wealth creation objectives.
+
+• Diversified portfolios are generally preferred for long investment horizons.
+
+""",
+
+
+
+        "aggressive_wealth":
+
+        """
+
+• High-value long-term investments may benefit from diversified equity allocation.
+
+• Strategic portfolio balancing may help optimize long-term wealth growth.
+
+""",
+
+
+
+        "manageable_debt":
+
+        """
+
+• Current EMI obligations appear financially manageable.
+
+• Maintaining repayment discipline may improve financial stability.
+
+""",
+
+
+
+        "balanced_emi":
+
+        """
+
+• Balanced EMI planning may help maintain healthy monthly cash flow.
+
+• Avoid excessive borrowing beyond repayment capacity.
+
+""",
+
+
+
+        "debt_planning":
+
+        """
+
+• EMI obligations should be balanced carefully with savings and investments.
+
+• Financial planning may help reduce long-term debt pressure.
+
+""",
+
+
+
+        "debt_caution":
+
+        """
+
+• High debt obligations may increase financial pressure over time.
+
+• Consider maintaining emergency savings and controlled borrowing.
+
+""",
+
+
+
+        "high_debt_risk":
+
+        """
+
+• Very high long-term debt exposure may create financial risk.
+
+• Careful repayment planning and debt reduction strategies are recommended.
+
+""",
+
+
+
+        "moderate_trading":
+
+        """
+
+• Monitoring trading frequency and brokerage costs may improve returns.
+
+""",
+
+
+
+        "cost_optimized_trading":
+
+        """
+
+• Lower brokerage costs may improve long-term trading efficiency.
+
+""",
+
+
+
+        "active_trading_strategy":
+
+        """
+
+• Active trading strategies require careful cost and risk management.
+
+""",
+
+
+
+        "high_volume_trading":
+
+        """
+
+• High-volume trading may require disciplined portfolio and brokerage management.
+
+""",
+
+
+
+        "professional_trading":
+
+        """
+
+• Professional trading strategies should include disciplined risk management practices.
+
+"""
+
+    }
+
+
+
+    return recommendations.get(
+
+        recommendation,
+
+        "Financial planning recommendations are currently unavailable."
+
+    )
+
 @app.route('/')
 def home():
 
@@ -199,6 +506,17 @@ Based on your SIP investment plan:
 This SIP could help build strong long-term wealth through disciplined monthly investing.
 """
 
+            ml_prediction = get_ml_recommendation(
+                monthly_investment,
+                years,
+                "sip"
+            )
+
+            recommendation_text = format_recommendation_text(
+                ml_prediction
+            )
+
+            bot_reply += recommendation_text
 
         else:
 
@@ -237,7 +555,7 @@ Please provide:
             )
 
 
-            bot_reply = response = f"""
+            bot_reply = f"""
 
 Based on your EMI calculation:
 
@@ -249,6 +567,17 @@ Based on your EMI calculation:
 
 """
 
+            ml_prediction = get_ml_recommendation(
+                loan_amount,
+                years,
+                "emi"
+            )
+
+            recommendation_text = format_recommendation_text(
+                ml_prediction
+            )
+
+            bot_reply += recommendation_text
 
         else:
 
@@ -294,6 +623,17 @@ Based on your brokerage calculation:
 
 """
 
+            ml_prediction = get_ml_recommendation(
+                trade_amount,
+                5,
+                "brokerage"
+            )
+
+            recommendation_text = format_recommendation_text(
+                ml_prediction
+            )
+
+            bot_reply += recommendation_text
 
         else:
 
@@ -343,6 +683,17 @@ Based on your lumpsum investment:
 This investment could grow significantly over the long term with consistent annual returns.
 """
 
+            ml_prediction = get_ml_recommendation(
+                investment,
+                years,
+                "lumpsum"
+            )
+
+            recommendation_text = format_recommendation_text(
+                ml_prediction
+            )
+
+            bot_reply += recommendation_text
 
         else:
 

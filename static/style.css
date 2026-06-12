@@ -707,6 +707,9 @@ input{
     box-shadow: var(--shadow);
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .bot-message{
@@ -715,9 +718,29 @@ input{
     border-radius: 18px;
     width: fit-content;
     max-width: 70%;
-    line-height: 1.8;
+    line-height: 1.2;
     color: var(--text);
     border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 0px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: left;
+    align-self: flex-start;
+}
+
+.user-message{
+    background: rgba(240, 182, 29, 0.15);
+    padding: 14px 18px;
+    border-radius: 16px;
+    width: fit-content;
+    max-width: 70%;
+    line-height: 1.2;
+    color: var(--text);
+    border: 1px solid rgba(240, 182, 29, 0.25);
+    margin-bottom: 0px;
+    margin-left: auto;
+    align-self: flex-end;
+    word-wrap: break-word;
 }
 
 .input-area{
@@ -732,12 +755,23 @@ input{
 .input-area input{
     flex: 1;
     padding: 18px 20px;
-    border: 1px solid var(--stroke);
+    border: 1px solid rgba(240, 182, 29, 0.3);
     border-radius: 18px;
-    background: rgba(9, 15, 29, 0.96);
+    background: rgba(240, 182, 29, 0.08);
     color: var(--text);
     font-size: 16px;
     outline: none;
+    transition: border-color 0.22s ease, background 0.22s ease;
+}
+
+.input-area input:focus{
+    border-color: rgba(240, 182, 29, 0.6);
+    background: rgba(240, 182, 29, 0.12);
+    box-shadow: 0 0 0 3px rgba(240, 182, 29, 0.1);
+}
+
+.input-area input::placeholder{
+    color: rgba(244, 247, 255, 0.4);
 }
 
 .input-area button{
@@ -1531,6 +1565,12 @@ body.light-theme #chat-box {
 body.light-theme .bot-message {
     background: rgba(15, 23, 42, 0.04);
     border: 1px solid rgba(15, 23, 42, 0.06);
+    color: var(--text);
+}
+
+body.light-theme .user-message {
+    background: rgba(240, 182, 29, 0.12);
+    border: 1px solid rgba(240, 182, 29, 0.3);
     color: var(--text);
 }
 
