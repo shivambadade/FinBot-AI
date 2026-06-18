@@ -74,6 +74,41 @@ with open("ml/type_encoder.pkl", "rb") as type_enc_file:
 with open("ml/recommendation_encoder.pkl", "rb") as rec_enc_file:
     recommendation_encoder = pickle.load(rec_enc_file)
 
+RECOMMENDATION_LABELS = {
+    "long_term_equity": "Long-Term Equity Growth",
+    "aggressive_wealth": "Aggressive Wealth Creation",
+    "balanced_growth": "Balanced Growth Strategy",
+    "moderate_growth": "Moderate Growth Strategy",
+    "equity_growth": "Equity Growth Strategy",
+    "aggressive_growth": "Aggressive Growth Strategy",
+    "low_risk": "Conservative Investment Strategy",
+    "balanced_fund": "Balanced Fund Strategy",
+    "diversified_growth": "Diversified Growth Strategy",
+    "wealth_creation": "Wealth Creation Strategy",
+    "long_term_diversified": "Long-Term Diversified Growth",
+    "manageable_debt": "Manageable Debt Strategy",
+    "balanced_emi": "Balanced EMI Strategy",
+    "debt_planning": "Debt Planning Strategy",
+    "debt_caution": "Debt Caution Strategy",
+    "high_debt_risk": "High Debt Risk",
+    "moderate_trading": "Moderate Trading Strategy",
+    "cost_optimized_trading": "Cost Optimized Trading Strategy",
+    "active_trading_strategy": "Active Trading Strategy",
+    "high_volume_trading": "High Volume Trading",
+    "professional_trading": "Professional Trading Strategy"
+}
+
+def format_recommendation_label(recommendation):
+    formatted_recommendation = RECOMMENDATION_LABELS.get(
+        recommendation,
+        recommendation.replace("_", " ").title()
+    )
+
+    print("Raw Recommendation:", recommendation)
+    print("Formatted Recommendation:", formatted_recommendation)
+
+    return formatted_recommendation
+
 stemmer = PorterStemmer()
 
 stop_words = set(stopwords.words("english"))
@@ -775,15 +810,22 @@ def calculate_sip_api():
         years
     )
 
+    recommendation_key = get_ml_recommendation(
+        amount,
+        years,
+        "sip"
+    )
+    recommendation = format_recommendation_label(recommendation_key)
+    
+
 
     return jsonify({
-
-        "future_value": result["future_value"],
-
-        "total_investment": result["total_investment"],
-
-        "estimated_returns": result["estimated_returns"]
-    })
+    "future_value": result["future_value"],
+    "total_investment": result["total_investment"],
+    "estimated_returns": result["estimated_returns"],
+    "recommendation": recommendation,
+    "recommendation_key": recommendation_key
+})
 
 @app.route("/calculate_emi", methods=["POST"])
 def emi_route():
@@ -799,6 +841,16 @@ def emi_route():
         annual_rate,
         years
     )
+
+    recommendation_key = get_ml_recommendation(
+        loan_amount,
+        years,
+        "emi"
+    )
+    recommendation = format_recommendation_label(recommendation_key)
+
+    result["recommendation"] = recommendation
+    result["recommendation_key"] = recommendation_key
 
     return jsonify(result)
 
@@ -816,6 +868,16 @@ def lumpsum_route():
         rate,
         years
     )
+
+    recommendation_key = get_ml_recommendation(
+        amount,
+        years,
+        "lumpsum"
+    )
+    recommendation = format_recommendation_label(recommendation_key)
+
+    result["recommendation"] = recommendation
+    result["recommendation_key"] = recommendation_key
 
     return jsonify(result)
 
@@ -835,6 +897,20 @@ def brokerage_route():
         quantity,
         brokerage_percent
     )
+
+    trade_amount = (buy_price * quantity) + (sell_price * quantity)
+    recommendation_key = get_ml_recommendation(
+        trade_amount,
+        brokerage_percent,
+        "brokerage"
+    )
+    recommendation = format_recommendation_label(recommendation_key)
+
+    result["recommendation"] = recommendation
+    result["recommendation_key"] = recommendation_key
+
+    print("Brokerage Recommendation:", recommendation)
+    print("Brokerage Result:", result)
 
     return jsonify(result)
 

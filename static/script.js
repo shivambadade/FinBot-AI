@@ -585,6 +585,47 @@ function openSIPPanel(){
                     </div>
                 </div>
             </div>
+            <div class="ai-insights-section">
+    <h3 class="insights-title">💡 AI INSIGHTS</h3>
+
+    <div class="insights-grid">
+
+        <div class="insight-card">
+            <h4>Recommendation</h4>
+            <p id="ai-recommendation">Awaiting ML prediction</p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Risk Score</h4>
+            <p id="ai-risk">7/10</p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Allocation</h4>
+            <p id="ai-allocation">
+                Equity 60%<br>
+                Debt 25%<br>
+                Gold 15%
+            </p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Investment Details</h4>
+            <p id="ai-details">
+                5 Years<br>
+                ₹10,000/month
+            </p>
+        </div>
+
+        <div class="insight-card full-width">
+            <h4>Pro Tip</h4>
+            <p id="ai-tip">
+                Increase your SIP by 10% every year to accelerate wealth creation.
+            </p>
+        </div>
+
+    </div>
+</div>
         </div>
     `;
 
@@ -607,13 +648,31 @@ async function calculateSIP(){
     const years = form["sip-years"];
     const returnRate = form["sip-return"];
 
+    document.getElementById("ai-details").innerHTML =
+`${years} Years<br>₹${Number(amount).toLocaleString()}/month`;
+
+
+    const requestPayload = { amount, years, return_rate: returnRate };
+    console.log("[SIP] Sending calculation request:", requestPayload);
+
     const response = await fetch("/calculate_sip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, years, return_rate: returnRate })
+        body: JSON.stringify(requestPayload)
     });
 
     const data = await response.json();
+    console.log("[SIP] /calculate_sip response:", data);
+
+    const rec = document.getElementById("ai-recommendation");
+    console.log("[SIP] Recommendation DOM target:", rec);
+
+if(rec){
+    rec.innerText = data.recommendation;
+    console.log("[SIP] Recommendation rendered:", data.recommendation);
+} else {
+    console.warn("[SIP] Recommendation element #ai-recommendation was not found.");
+}
 
     animateValue("future-value", prevValues.sip.future, data.future_value);
     animateValue("total-invested", prevValues.sip.invested, data.total_investment);
@@ -696,6 +755,7 @@ async function calculateSIP(){
             }
         }
     });
+
 
     fetch("/save-calculation", {
         method: "POST",
@@ -877,6 +937,35 @@ function openLumpsumPanel(){
                     </div>
                 </div>
             </div>
+            <div class="ai-insights-section">
+    <h3 class="insights-title">💡 AI INSIGHTS</h3>
+
+    <div class="insights-grid">
+
+        <div class="insight-card">
+            <h4>Recommendation</h4>
+            <p id="lump-recommendation">Moderate Growth</p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Risk Score</h4>
+            <p id="lump-risk">7/10</p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Investment Details</h4>
+            <p id="lump-details">5 Years</p>
+        </div>
+
+        <div class="insight-card full-width">
+            <h4>Pro Tip</h4>
+            <p id="lump-tip">
+                Stay invested for the full tenure.
+            </p>
+        </div>
+
+    </div>
+</div>
         </div>
     `;
 
@@ -899,6 +988,31 @@ async function calculateLumpsum(){
     const rate = form["lump-rate"];
     const years = form["lump-years"];
 
+let recommendation, risk, tip;
+
+if(rate <= 10){
+    recommendation = "Conservative";
+    risk = "4/10";
+    tip = "Capital preservation focused.";
+}
+else if(rate <= 15){
+    recommendation = "Moderate Growth";
+    risk = "7/10";
+    tip = "Balanced growth strategy.";
+}
+else{
+    recommendation = "Aggressive Growth";
+    risk = "9/10";
+    tip = "Suitable for long-term wealth creation.";
+}
+
+document.getElementById("lump-recommendation").innerText = recommendation;
+document.getElementById("lump-risk").innerText = risk;
+document.getElementById("lump-details").innerHTML =
+`${years} Years<br>₹${Number(amount).toLocaleString()}`;
+
+document.getElementById("lump-tip").innerText = tip;
+
     const response = await fetch("/calculate_lumpsum", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -906,6 +1020,10 @@ async function calculateLumpsum(){
     });
 
     const data = await response.json();
+    recommendation = data.recommendation || recommendation;
+    console.log("Lumpsum Response:", data);
+
+    document.getElementById("lump-recommendation").innerText = recommendation;
 
     animateValue("lump-future", prevValues.lump.future, data.future_value);
     animateValue("lump-invested", prevValues.lump.invested, data.invested_amount);
@@ -960,6 +1078,11 @@ async function calculateLumpsum(){
             }
         }
     });
+
+    document.getElementById("lump-recommendation").innerText = recommendation;
+document.getElementById("lump-risk").innerText = risk;
+document.getElementById("lump-details").innerHTML =
+`${years} Years<br>₹${Number(amount).toLocaleString()}`;
 
     fetch("/save-calculation", {
         method: "POST",
@@ -1175,6 +1298,35 @@ function openEMIPanel(){
                     </div>
                 </div>
             </div>
+            <div class="ai-insights-section">
+    <h3 class="insights-title">💡 AI INSIGHTS</h3>
+
+    <div class="insights-grid">
+
+        <div class="insight-card">
+            <h4>Recommendation</h4>
+            <p id="emi-recommendation">Affordable Loan</p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Risk Score</h4>
+            <p id="emi-risk">Low</p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Loan Details</h4>
+            <p id="emi-details">15 Years</p>
+        </div>
+
+        <div class="insight-card full-width">
+            <h4>Pro Tip</h4>
+            <p id="emi-tip">
+                Keep EMI below 40% of monthly income.
+            </p>
+        </div>
+
+    </div>
+</div>
         </div>
     `;
 
@@ -1197,6 +1349,30 @@ async function calculateEMI(){
     const rate = form["emi-rate"];
     const years = form["emi-years"];
 
+ let recommendation, risk, tip;
+
+if(rate <= 8){
+    recommendation = "Affordable Loan";
+    risk = "Low";
+    tip = "Good interest rate.";
+}
+else if(rate <= 12){
+    recommendation = "Moderate Loan";
+    risk = "Medium";
+    tip = "Consider partial prepayment.";
+}
+else{
+    recommendation = "Expensive Loan";
+    risk = "High";
+    tip = "Compare lenders before borrowing.";
+}
+
+document.getElementById("emi-recommendation").innerText = recommendation;
+document.getElementById("emi-risk").innerText = risk;
+document.getElementById("emi-details").innerHTML =
+`${years} Years<br>₹${Number(loan).toLocaleString()}`;
+
+document.getElementById("emi-tip").innerText = tip;
     const response = await fetch("/calculate_emi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1204,6 +1380,10 @@ async function calculateEMI(){
     });
 
     const data = await response.json();
+    recommendation = data.recommendation || recommendation;
+    console.log("EMI Response:", data);
+
+    document.getElementById("emi-recommendation").innerText = recommendation;
 
     animateValue("emi-result", prevValues.emi.result, data.monthly_emi);
     animateValue("emi-principal", prevValues.emi.principal, loan);
@@ -1251,6 +1431,11 @@ async function calculateEMI(){
             }
         }
     });
+
+    document.getElementById("emi-recommendation").innerText = recommendation;
+document.getElementById("emi-risk").innerText = risk;
+document.getElementById("emi-details").innerHTML =
+`${years} Years<br>₹${Number(loan).toLocaleString()} Loan`;
 
     fetch("/save-calculation", {
         method: "POST",
@@ -1474,6 +1659,35 @@ function openBrokeragePanel(){
                     </div>
                 </div>
             </div>
+            <div class="ai-insights-section">
+    <h3 class="insights-title">💡 AI INSIGHTS</h3>
+
+    <div class="insights-grid">
+
+        <div class="insight-card">
+            <h4>Trade Status</h4>
+            <p id="brokerage-recommendation">Awaiting ML prediction</p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Risk Level</h4>
+            <p id="brokerage-risk">-</p>
+        </div>
+
+        <div class="insight-card">
+            <h4>Trade Details</h4>
+            <p id="brokerage-details">Enter trade details</p>
+        </div>
+
+        <div class="insight-card full-width">
+            <h4>Pro Tip</h4>
+            <p id="brokerage-tip">
+                Watch transaction costs before entering trades.
+            </p>
+        </div>
+
+    </div>
+</div>
         </div>
     `;
 
@@ -1483,6 +1697,38 @@ function openBrokeragePanel(){
     bindSmartInput("brokerage-percent", 0, true, 10, false); // Max 10%
 
     resetBrokerageState();
+}
+
+function getBrokerageInsightDetails(recommendationKey, netPositive){
+    const insights = {
+        moderate_trading: {
+            risk: "Medium",
+            tip: "Monitor trading frequency and brokerage costs before scaling trades."
+        },
+        cost_optimized_trading: {
+            risk: "Low to Medium",
+            tip: "Keep comparing broker plans because lower charges can improve net returns."
+        },
+        active_trading_strategy: {
+            risk: "High",
+            tip: "Use clear entry, exit, and stop-loss rules for active trading."
+        },
+        high_volume_trading: {
+            risk: "High",
+            tip: "Track total charges closely because high volume can reduce profits quickly."
+        },
+        professional_trading: {
+            risk: "Advanced",
+            tip: "Use disciplined risk management and review execution costs regularly."
+        }
+    };
+
+    return insights[recommendationKey] || {
+        risk: netPositive ? "Medium" : "High",
+        tip: netPositive
+            ? "Trade generated positive net returns after charges."
+            : "Review brokerage costs, entry price, and exit price before repeating this trade."
+    };
 }
 
 async function calculateBrokerage(){
@@ -1506,8 +1752,21 @@ async function calculateBrokerage(){
     });
 
     const data = await response.json();
+    console.log("Brokerage Response:", data);
+
     const turnover = (buyPrice * quantity) + (sellPrice * quantity);
     const netPositive = Number(data.net_profit || 0) >= 0;
+    const recommendation = data.recommendation || "Recommendation unavailable";
+    const insightDetails = getBrokerageInsightDetails(
+        data.recommendation_key,
+        netPositive
+    );
+
+    document.getElementById("brokerage-recommendation").innerText = recommendation;
+    document.getElementById("brokerage-risk").innerText = insightDetails.risk;
+    document.getElementById("brokerage-details").innerHTML =
+`${Number(quantity).toLocaleString()} Shares<br>${formatCurrency(data.net_profit, true)} Net P&L`;
+    document.getElementById("brokerage-tip").innerText = insightDetails.tip;
 
     animateValue("net-profit", prevValues.brokerage.net, data.net_profit);
     animateValue("gross-profit", prevValues.brokerage.gross, data.gross_profit);
