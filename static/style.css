@@ -736,52 +736,6 @@ input{
     font-size: 15px;
     color: var(--text);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    margin-bottom: 0px;
-    white-space: pre-line;
-    word-wrap: break-word;
-    text-align: left;
-    align-self: flex-start;
-    display: inline-block;
-}
-
-/* Tighten vertical spacing for bot message content */
-.bot-message p{    
-    margin: 0;
-    padding: 0;
-}
-
-.bot-message .bot-greeting{
-    margin-bottom: 6px;
-}
-
-.bot-message .bot-intro{
-    margin: 6px 0 4px 0;
-}
-
-.bot-list{
-    margin: 0;
-    padding-left: 18px;
-    margin-top: 4px;
-    list-style: disc;
-}
-
-.bot-list li{
-    margin: 4px 0;
-}
-
-.user-message{
-    background: rgba(240, 182, 29, 0.15);
-    padding: 14px 18px;
-    border-radius: 16px;
-    width: fit-content;
-    max-width: 70%;
-    line-height: 1.2;
-    color: var(--text);
-    border: 1px solid rgba(240, 182, 29, 0.25);
-    margin-bottom: 0px;
-    margin-left: auto;
-    align-self: flex-end;
-    word-wrap: break-word;
 }
 
 .input-area{

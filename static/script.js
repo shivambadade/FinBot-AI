@@ -1908,3 +1908,75 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+
+// Chat message sending function
+async function sendMessage() {
+    const input = document.getElementById("user-input");
+    const message = input.value.trim();
+    
+    if (message === "") return;
+    
+    // Add user message to chat box
+    const chatBox = document.getElementById("chat-box");
+    
+    const userMessageDiv = document.createElement("div");
+    userMessageDiv.className = "user-message";
+    userMessageDiv.textContent = message;
+    chatBox.appendChild(userMessageDiv);
+    
+    // Clear input
+    input.value = "";
+    
+    // Scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+    
+    try {
+        // Send to backend
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
+        });
+        
+        const data = await response.json();
+        const botReply = data.reply || "Sorry, I could not process your message.";
+        
+        // Add bot message to chat box
+        const botMessageDiv = document.createElement("div");
+        botMessageDiv.className = "bot-message";
+        botMessageDiv.textContent = botReply;
+        chatBox.appendChild(botMessageDiv);
+        
+        // Scroll to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+        
+    } catch (error) {
+        console.error("Error:", error);
+        
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "bot-message";
+        errorDiv.textContent = "❌ Error connecting to the server. Please try again.";
+        chatBox.appendChild(errorDiv);
+        
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+// Enter key support for sending messages
+document.addEventListener("DOMContentLoaded", () => {
+    const stored = localStorage.getItem("theme-mode");
+    if (stored === "light") {
+        document.body.classList.add("light-theme");
+    }
+    
+    // Add Enter key listener for chat input
+    const userInput = document.getElementById("user-input");
+    if (userInput) {
+        userInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    }
+});
