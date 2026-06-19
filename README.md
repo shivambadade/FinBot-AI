@@ -17,80 +17,116 @@ The application currently supports:
 ---
 
 ## Tech Stack
+# FinBot AI — Conversational Financial Assistant
+
+## Overview
+
+FinBot AI is a conversational fintech web application built using Flask, Python, JavaScript and a MySQL backend. The app combines financial calculators, a conversational chatbot, and interactive visualizations into a single dashboard designed for exploration and simple financial planning.
+
+The application currently includes:
+
+- SIP Calculator — Calculate Systematic Investment Plan returns.
+- EMI Calculator — Compute Equated Monthly Installments for loans.
+- Lumpsum Calculator — Compute compound-growth for one-time investments.
+- Brokerage Calculator — Compute brokerage, taxes and net profit/loss for equity trades.
+- Interactive graphs powered by Chart.js.
+- Conversational chatbot powered by NLTK preprocessing and a pre-trained scikit-learn intent model.
+- MySQL integration for storing chat history and calculation logs.
+
+---
+
+## Tech Stack
 
 ### Frontend
-* HTML5 & CSS3 (Neon Fintech Theme)
-* JavaScript (ES6+)
-* Chart.js (Data Visualization)
+- HTML5 & CSS3 (custom fintech theme)
+- JavaScript (ES6+)
+- Chart.js
 
 ### Backend
-* Python 3
-* Flask (Web Framework)
-* NLTK (Natural Language Toolkit)
-* Scikit-Learn (Intent Classification)
+- Python 3
+- Flask
+- NLTK
+- scikit-learn
 
 ### Database
-* MySQL
+- MySQL
 
 ---
 
 ## Project Structure
 
+Below is the actual project structure detected in the workspace. Files and folders reflect the current repository layout.
+
 ```text
 FinBot-AI/
-├── Calculators/
-│   ├── sip.py
-│   ├── emi.py
-│   ├── lumpsum.py
-│   └── brokerage.py
-├── ml/
-│   ├── intent_model.pkl
-│   └── vectorizer.pkl
-├── static/
-│   ├── script.js
-│   ├── style.css
-│   └── images/
-├── templates/
-│   └── index.html
+├── .agents/
+├── .env
 ├── .env.example
+├── .git/
 ├── .gitignore
 ├── app.py
+├── Calculators/
+│   ├── brokerag e.py
+│   ├── emi.py
+│   ├── lumpsum.py
+│   └── sip.py
 ├── database.py
+├── ml/
+│   ├── intent_model.pkl
+│   ├── intents_dataset.csv
+│   ├── recommendation_dataset.csv
+│   ├── recommendation_encoder.pkl
+│   ├── recommendation_model.pkl
+│   ├── train_model.py
+│   ├── train_recommendation_model.py
+│   ├── type_encoder.pkl
+│   └── vectorizer.pkl
 ├── mysql_test.py
-├── view_chats.py
+├── README.md
 ├── requirements.txt
-└── README.md
+├── static/
+│   ├── images/
+│   ├── script.js
+│   └── style.css
+├── templates/
+│   └── index.html
+├── venv/
+├── view_chats.py
+└── __pycache__/
 ```
+
+Note: There is a local `venv/` directory in the workspace — this is a local virtual environment and is typically excluded from source control.
 
 ---
 
 ## Setup Instructions
 
-### 1. Clone the Repository
+1. Clone the repository
+
 ```bash
 git clone https://github.com/SHIVANGI-2006/FinBot-AI.git
 cd FinBot-AI
 ```
 
-### 2. Create and Activate Virtual Environment
+2. Create and activate a virtual environment
+
 ```bash
-# Create environment
 python -m venv .venv
-
-# Activate on Windows
+# Windows
 .venv\Scripts\activate
-
-# Activate on Mac/Linux
+# macOS / Linux
 source .venv/bin/activate
 ```
 
-### 3. Install Dependencies
+3. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Database Setup
-Ensure you have MySQL running. Create the database and table:
+4. Database setup
+
+Make sure MySQL is running and create a database and `chat_history` table. Example SQL:
 
 ```sql
 CREATE DATABASE finbot_ai;
@@ -104,45 +140,40 @@ CREATE TABLE chat_history (
 );
 ```
 
-### 5. Environment Variables
-Create a `.env` file in the root directory using the template below:
+5. Configure environment variables
 
-```env
-FLASK_ENV=development
-SECRET_KEY=your_secret_key_here
-MYSQL_HOST=localhost
-MYSQL_USER=root
-MYSQL_PASSWORD=your_mysql_password
-MYSQL_DATABASE=finbot_ai
-```
+Copy `.env.example` to `.env` and update database credentials and `SECRET_KEY` as needed.
 
-### 6. Run the Application
+6. Run the app
+
 ```bash
 python app.py
 ```
-Open your browser and navigate to `http://127.0.0.1:5000`.
+
+Open `http://127.0.0.1:5000` in your browser.
 
 ---
 
-## Chatbot Interaction Examples
+## Usage Examples
 
-You can interact with the chatbot in the UI using natural queries:
-* *"Calculate SIP for 5000 monthly for 10 years at 12%"*
-* *"Calculate EMI for 500000 loan for 5 years at 8%"*
-* *"Calculate lumpsum for 100000 at 12% for 10 years"*
-* *"Calculate brokerage for 100000 buy and 110000 sell with 100 shares at 0.05%"*
+Sample queries you can type in the chat or use via UI:
 
----
-
-## Future Scope
-
-* AI-powered personalized investment recommendations.
-* Real-time stock market API integrations.
-* User authentication and personalized portfolios.
-* Categorized chat history & exports.
-* Voice-enabled finance assistant.
+- "Calculate SIP: 5000 monthly for 10 years at 12%"
+- "Calculate EMI: 500000 loan for 5 years at 8%"
+- "Calculate lumpsum: 100000 at 12% for 10 years"
+- "Brokerage: buy at 100, sell at 110, qty 100, brokerage 0.05%"
 
 ---
 
-## Developed By
-* **Shivangi Kushwaha**
+## Notes
+
+- Calculator implementations reside in the `Calculators/` folder and are reused by the chat route and API endpoints.
+- Pretrained models and training artifacts live in `ml/`.
+- UI assets and logic are in `static/` and `templates/index.html`.
+- No external market data APIs are currently integrated.
+
+---
+
+## Author
+
+- **Shivangi Kushwaha**

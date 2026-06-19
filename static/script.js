@@ -12,6 +12,78 @@ const prevValues = {
     brokerage: { net: 0, gross: 0, charge: 0, stt: 0, gst: 0, total: 0 }
 };
 
+let calculatorAssistantMessage = "";
+
+function renderCalculatorAssistant() {
+    return `
+        <div id="calculator-assistant-launch" class="calculator-assistant-launch" hidden>
+            <button type="button" class="open-assistant-btn" onclick="toggleCalculatorAssistant()">
+                <span aria-hidden="true">🤖</span> Open FinBot Assistant
+            </button>
+        </div>
+        <section id="calculator-assistant" class="calculator-assistant" hidden aria-label="FinBot calculator assistant">
+            <div class="calculator-assistant-header">
+                <div>
+                    <span class="assistant-status">● Online</span>
+                    <h2>FinBot Assistant</h2>
+                    <p>Ask a follow-up question about this calculation.</p>
+                </div>
+                <button type="button" class="assistant-close-btn" onclick="closeCalculatorAssistant()" aria-label="Close FinBot Assistant">×</button>
+            </div>
+            <div id="calculator-chat-box" class="assistant-chat-box" aria-live="polite"></div>
+            <div class="input-area assistant-input-area">
+                <input type="text" id="calculator-user-input" placeholder="Ask FinBot about this result..." autocomplete="off">
+                <button type="button" onclick="sendCalculatorMessage()">Send</button>
+            </div>
+        </section>
+    `;
+}
+
+function prepareCalculatorAssistant(message) {
+    calculatorAssistantMessage = message;
+    const launch = document.getElementById("calculator-assistant-launch");
+    const assistant = document.getElementById("calculator-assistant");
+    const chatBox = document.getElementById("calculator-chat-box");
+    if (launch) launch.hidden = false;
+    if (assistant) assistant.hidden = true;
+    if (chatBox) chatBox.innerHTML = "";
+}
+
+function toggleCalculatorAssistant() {
+    const assistant = document.getElementById("calculator-assistant");
+    const chatBox = document.getElementById("calculator-chat-box");
+    if (!assistant || !chatBox || !calculatorAssistantMessage) return;
+
+    if (!assistant.hidden) {
+        closeCalculatorAssistant();
+        return;
+    }
+
+    assistant.hidden = false;
+    assistant.classList.add("assistant-active");
+    assistant.classList.remove("assistant-closing");
+
+    if (!chatBox.children.length) {
+        appendChatMessage(chatBox, "bot", calculatorAssistantMessage);
+    }
+
+    assistant.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.setTimeout(() => document.getElementById("calculator-user-input")?.focus(), 350);
+}
+
+function closeCalculatorAssistant() {
+    const assistant = document.getElementById("calculator-assistant");
+    if (!assistant) return;
+
+    assistant.classList.remove("assistant-active");
+    assistant.classList.add("assistant-closing");
+
+    window.setTimeout(() => {
+        assistant.hidden = true;
+        assistant.classList.remove("assistant-closing");
+    }, 240);
+}
+
 /**
  * Parses user alphanumeric strings (e.g. "5k", "10L", "1Cr", "1.5Cr") to raw float numbers.
  */
@@ -78,7 +150,7 @@ function formatCurrency(value, full = false) {
 /**
  * Count animation helper that updates innerText from a starting value to an ending value.
  */
-function animateValue(elementId, start, end, duration = 400) {
+function animateValue(elementId, start, end, duration = 800) {
     const obj = document.getElementById(elementId);
     if (!obj) return;
     
@@ -105,6 +177,22 @@ function animateValue(elementId, start, end, duration = 400) {
     };
     
     window.requestAnimationFrame(step);
+}
+
+/* Typing indicator helpers: show and remove a small animated dot indicator */
+function showTypingIndicator(container) {
+    if (!container) return null;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'typing-indicator chat-message';
+    wrapper.setAttribute('aria-hidden', 'true');
+    wrapper.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+    container.appendChild(wrapper);
+    container.scrollTop = container.scrollHeight;
+    return wrapper;
+}
+
+function removeTypingIndicator(el) {
+    try { if (el && el.parentNode) el.parentNode.removeChild(el); } catch(e){}
 }
 
 /**
@@ -585,47 +673,7 @@ function openSIPPanel(){
                     </div>
                 </div>
             </div>
-            <div class="ai-insights-section">
-    <h3 class="insights-title">💡 AI INSIGHTS</h3>
-
-    <div class="insights-grid">
-
-        <div class="insight-card">
-            <h4>Recommendation</h4>
-            <p id="ai-recommendation">Awaiting ML prediction</p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Risk Score</h4>
-            <p id="ai-risk">7/10</p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Allocation</h4>
-            <p id="ai-allocation">
-                Equity 60%<br>
-                Debt 25%<br>
-                Gold 15%
-            </p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Investment Details</h4>
-            <p id="ai-details">
-                5 Years<br>
-                ₹10,000/month
-            </p>
-        </div>
-
-        <div class="insight-card full-width">
-            <h4>Pro Tip</h4>
-            <p id="ai-tip">
-                Increase your SIP by 10% every year to accelerate wealth creation.
-            </p>
-        </div>
-
-    </div>
-</div>
+            ${renderCalculatorAssistant()}
         </div>
     `;
 
@@ -648,10 +696,6 @@ async function calculateSIP(){
     const years = form["sip-years"];
     const returnRate = form["sip-return"];
 
-    document.getElementById("ai-details").innerHTML =
-`${years} Years<br>₹${Number(amount).toLocaleString()}/month`;
-
-
     const requestPayload = { amount, years, return_rate: returnRate };
     console.log("[SIP] Sending calculation request:", requestPayload);
 
@@ -663,16 +707,6 @@ async function calculateSIP(){
 
     const data = await response.json();
     console.log("[SIP] /calculate_sip response:", data);
-
-    const rec = document.getElementById("ai-recommendation");
-    console.log("[SIP] Recommendation DOM target:", rec);
-
-if(rec){
-    rec.innerText = data.recommendation;
-    console.log("[SIP] Recommendation rendered:", data.recommendation);
-} else {
-    console.warn("[SIP] Recommendation element #ai-recommendation was not found.");
-}
 
     animateValue("future-value", prevValues.sip.future, data.future_value);
     animateValue("total-invested", prevValues.sip.invested, data.total_investment);
@@ -755,6 +789,18 @@ if(rec){
             }
         }
     });
+
+    const sipRisk = returnRate <= 8 ? "Low to Moderate" : returnRate <= 15 ? "Moderate" : "High";
+    prepareCalculatorAssistant(`Based on your SIP analysis:
+
+Recommendation:
+${data.recommendation || "Long-Term Equity Growth"}
+
+Risk:
+${sipRisk}
+
+Pro Tip:
+Continue investing consistently for long-term wealth creation. Consider increasing your SIP as your income grows.`);
 
 
     fetch("/save-calculation", {
@@ -937,35 +983,7 @@ function openLumpsumPanel(){
                     </div>
                 </div>
             </div>
-            <div class="ai-insights-section">
-    <h3 class="insights-title">💡 AI INSIGHTS</h3>
-
-    <div class="insights-grid">
-
-        <div class="insight-card">
-            <h4>Recommendation</h4>
-            <p id="lump-recommendation">Moderate Growth</p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Risk Score</h4>
-            <p id="lump-risk">7/10</p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Investment Details</h4>
-            <p id="lump-details">5 Years</p>
-        </div>
-
-        <div class="insight-card full-width">
-            <h4>Pro Tip</h4>
-            <p id="lump-tip">
-                Stay invested for the full tenure.
-            </p>
-        </div>
-
-    </div>
-</div>
+            ${renderCalculatorAssistant()}
         </div>
     `;
 
@@ -1006,13 +1024,6 @@ else{
     tip = "Suitable for long-term wealth creation.";
 }
 
-document.getElementById("lump-recommendation").innerText = recommendation;
-document.getElementById("lump-risk").innerText = risk;
-document.getElementById("lump-details").innerHTML =
-`${years} Years<br>₹${Number(amount).toLocaleString()}`;
-
-document.getElementById("lump-tip").innerText = tip;
-
     const response = await fetch("/calculate_lumpsum", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1022,8 +1033,6 @@ document.getElementById("lump-tip").innerText = tip;
     const data = await response.json();
     recommendation = data.recommendation || recommendation;
     console.log("Lumpsum Response:", data);
-
-    document.getElementById("lump-recommendation").innerText = recommendation;
 
     animateValue("lump-future", prevValues.lump.future, data.future_value);
     animateValue("lump-invested", prevValues.lump.invested, data.invested_amount);
@@ -1079,10 +1088,16 @@ document.getElementById("lump-tip").innerText = tip;
         }
     });
 
-    document.getElementById("lump-recommendation").innerText = recommendation;
-document.getElementById("lump-risk").innerText = risk;
-document.getElementById("lump-details").innerHTML =
-`${years} Years<br>₹${Number(amount).toLocaleString()}`;
+    prepareCalculatorAssistant(`Based on your lumpsum analysis:
+
+Recommendation:
+${recommendation}
+
+Risk:
+${risk}
+
+Pro Tip:
+${tip} Stay invested for the full tenure and review your asset allocation periodically.`);
 
     fetch("/save-calculation", {
         method: "POST",
@@ -1298,35 +1313,7 @@ function openEMIPanel(){
                     </div>
                 </div>
             </div>
-            <div class="ai-insights-section">
-    <h3 class="insights-title">💡 AI INSIGHTS</h3>
-
-    <div class="insights-grid">
-
-        <div class="insight-card">
-            <h4>Recommendation</h4>
-            <p id="emi-recommendation">Affordable Loan</p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Risk Score</h4>
-            <p id="emi-risk">Low</p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Loan Details</h4>
-            <p id="emi-details">15 Years</p>
-        </div>
-
-        <div class="insight-card full-width">
-            <h4>Pro Tip</h4>
-            <p id="emi-tip">
-                Keep EMI below 40% of monthly income.
-            </p>
-        </div>
-
-    </div>
-</div>
+            ${renderCalculatorAssistant()}
         </div>
     `;
 
@@ -1367,12 +1354,6 @@ else{
     tip = "Compare lenders before borrowing.";
 }
 
-document.getElementById("emi-recommendation").innerText = recommendation;
-document.getElementById("emi-risk").innerText = risk;
-document.getElementById("emi-details").innerHTML =
-`${years} Years<br>₹${Number(loan).toLocaleString()}`;
-
-document.getElementById("emi-tip").innerText = tip;
     const response = await fetch("/calculate_emi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1382,8 +1363,6 @@ document.getElementById("emi-tip").innerText = tip;
     const data = await response.json();
     recommendation = data.recommendation || recommendation;
     console.log("EMI Response:", data);
-
-    document.getElementById("emi-recommendation").innerText = recommendation;
 
     animateValue("emi-result", prevValues.emi.result, data.monthly_emi);
     animateValue("emi-principal", prevValues.emi.principal, loan);
@@ -1432,10 +1411,16 @@ document.getElementById("emi-tip").innerText = tip;
         }
     });
 
-    document.getElementById("emi-recommendation").innerText = recommendation;
-document.getElementById("emi-risk").innerText = risk;
-document.getElementById("emi-details").innerHTML =
-`${years} Years<br>₹${Number(loan).toLocaleString()} Loan`;
+    prepareCalculatorAssistant(`Based on your EMI analysis:
+
+Recommendation:
+${recommendation}
+
+Risk:
+${risk}
+
+Pro Tip:
+${tip} Keep total monthly EMIs within a comfortable share of your take-home income.`);
 
     fetch("/save-calculation", {
         method: "POST",
@@ -1659,35 +1644,7 @@ function openBrokeragePanel(){
                     </div>
                 </div>
             </div>
-            <div class="ai-insights-section">
-    <h3 class="insights-title">💡 AI INSIGHTS</h3>
-
-    <div class="insights-grid">
-
-        <div class="insight-card">
-            <h4>Trade Status</h4>
-            <p id="brokerage-recommendation">Awaiting ML prediction</p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Risk Level</h4>
-            <p id="brokerage-risk">-</p>
-        </div>
-
-        <div class="insight-card">
-            <h4>Trade Details</h4>
-            <p id="brokerage-details">Enter trade details</p>
-        </div>
-
-        <div class="insight-card full-width">
-            <h4>Pro Tip</h4>
-            <p id="brokerage-tip">
-                Watch transaction costs before entering trades.
-            </p>
-        </div>
-
-    </div>
-</div>
+            ${renderCalculatorAssistant()}
         </div>
     `;
 
@@ -1762,12 +1719,6 @@ async function calculateBrokerage(){
         netPositive
     );
 
-    document.getElementById("brokerage-recommendation").innerText = recommendation;
-    document.getElementById("brokerage-risk").innerText = insightDetails.risk;
-    document.getElementById("brokerage-details").innerHTML =
-`${Number(quantity).toLocaleString()} Shares<br>${formatCurrency(data.net_profit, true)} Net P&L`;
-    document.getElementById("brokerage-tip").innerText = insightDetails.tip;
-
     animateValue("net-profit", prevValues.brokerage.net, data.net_profit);
     animateValue("gross-profit", prevValues.brokerage.gross, data.gross_profit);
     animateValue("brokerage-charge", prevValues.brokerage.charge, data.brokerage);
@@ -1833,6 +1784,17 @@ async function calculateBrokerage(){
         }
     });
 
+    prepareCalculatorAssistant(`Based on your brokerage analysis:
+
+Recommendation:
+${recommendation}
+
+Risk:
+${insightDetails.risk}
+
+Pro Tip:
+${insightDetails.tip}`);
+
     fetch("/save-calculation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1843,61 +1805,84 @@ async function calculateBrokerage(){
     });
 }
 
-// Send message function for chatbot
-async function sendMessage() {
-    const userInput = document.getElementById("user-input");
-    const message = userInput.value.trim();
-    
-    if (!message) return;
-    
-    // Add user message to chat
-    const chatBox = document.getElementById("chat-box");
-    const userMessageEl = document.createElement("div");
-    userMessageEl.className = "user-message";
-    userMessageEl.textContent = message;
-    chatBox.appendChild(userMessageEl);
-    
-    // Clear input
-    userInput.value = "";
-    
-    // Scroll to bottom
+function appendChatMessage(chatBox, type, text) {
+    if (!chatBox || !text) return;
+    const messageEl = document.createElement("div");
+    messageEl.className = `${type}-message`;
+    // add enter animation class
+    messageEl.classList.add('chat-message');
+    messageEl.textContent = text;
+    chatBox.appendChild(messageEl);
     chatBox.scrollTop = chatBox.scrollHeight;
-    
+    return messageEl;
+}
+
+async function sendCalculatorMessage() {
+    const input = document.getElementById("calculator-user-input");
+    if (!input) return;
+
+    const message = input.value.trim();
+    if (!message) return;
+
+    const chatBox = document.getElementById("calculator-chat-box");
+    appendChatMessage(chatBox, "user", message);
+    input.value = "";
+    // show typing indicator while waiting for response
+    const typing = showTypingIndicator(chatBox);
     try {
-        // Send to backend
         const response = await fetch("/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ message })
         });
-        
+
         const data = await response.json();
-        
-        // Add bot reply to chat
-        const botMessageEl = document.createElement("div");
-        botMessageEl.className = "bot-message";
-        botMessageEl.textContent = data.reply;
-        chatBox.appendChild(botMessageEl);
-        
-        // Scroll to bottom
-        chatBox.scrollTop = chatBox.scrollHeight;
+        removeTypingIndicator(typing);
+        appendChatMessage(chatBox, "bot", data.reply || "Sorry, I could not process your message.");
     } catch (error) {
-        console.error("Error sending message:", error);
-        const errorEl = document.createElement("div");
-        errorEl.className = "bot-message";
-        errorEl.textContent = "Sorry, there was an error processing your message.";
-        chatBox.appendChild(errorEl);
+        console.error("Error sending calculator message:", error);
+        removeTypingIndicator(typing);
+        appendChatMessage(chatBox, "bot", "Sorry, there was an error processing your message.");
     }
 }
 
-// Check stored theme & enter key support on DOM load
+// Send message function for chatbot
+async function sendMessage() {
+    const input = document.getElementById("user-input");
+    if (!input) return;
+
+    const message = input.value.trim();
+    if (!message) return;
+
+    const chatBox = document.getElementById("chat-box");
+    appendChatMessage(chatBox, "user", message);
+    input.value = "";
+    // show typing indicator while waiting for response
+    const typing = showTypingIndicator(chatBox);
+    try {
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+        removeTypingIndicator(typing);
+        appendChatMessage(chatBox, "bot", data.reply || "Sorry, I could not process your message.");
+    } catch (error) {
+        console.error("Error:", error);
+        removeTypingIndicator(typing);
+        appendChatMessage(chatBox, "bot", "❌ Error connecting to the server. Please try again.");
+    }
+}
+
+// Page initialization and keyboard support
 document.addEventListener("DOMContentLoaded", () => {
     const stored = localStorage.getItem("theme-mode");
     if (stored === "light") {
         document.body.classList.add("light-theme");
     }
-    
-    // Add Enter key support for sending messages
+
     const userInput = document.getElementById("user-input");
     if (userInput) {
         userInput.addEventListener("keypress", (event) => {
@@ -1907,76 +1892,22 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-});
 
-
-// Chat message sending function
-async function sendMessage() {
-    const input = document.getElementById("user-input");
-    const message = input.value.trim();
-    
-    if (message === "") return;
-    
-    // Add user message to chat box
-    const chatBox = document.getElementById("chat-box");
-    
-    const userMessageDiv = document.createElement("div");
-    userMessageDiv.className = "user-message";
-    userMessageDiv.textContent = message;
-    chatBox.appendChild(userMessageDiv);
-    
-    // Clear input
-    input.value = "";
-    
-    // Scroll to bottom
-    chatBox.scrollTop = chatBox.scrollHeight;
-    
-    try {
-        // Send to backend
-        const response = await fetch("/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: message })
-        });
-        
-        const data = await response.json();
-        const botReply = data.reply || "Sorry, I could not process your message.";
-        
-        // Add bot message to chat box
-        const botMessageDiv = document.createElement("div");
-        botMessageDiv.className = "bot-message";
-        botMessageDiv.textContent = botReply;
-        chatBox.appendChild(botMessageDiv);
-        
-        // Scroll to bottom
-        chatBox.scrollTop = chatBox.scrollHeight;
-        
-    } catch (error) {
-        console.error("Error:", error);
-        
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "bot-message";
-        errorDiv.textContent = "❌ Error connecting to the server. Please try again.";
-        chatBox.appendChild(errorDiv);
-        
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-}
-
-// Enter key support for sending messages
-document.addEventListener("DOMContentLoaded", () => {
-    const stored = localStorage.getItem("theme-mode");
-    if (stored === "light") {
-        document.body.classList.add("light-theme");
-    }
-    
-    // Add Enter key listener for chat input
-    const userInput = document.getElementById("user-input");
-    if (userInput) {
-        userInput.addEventListener("keypress", (event) => {
+    const calculatorInput = document.getElementById("calculator-user-input");
+    if (calculatorInput) {
+        calculatorInput.addEventListener("keypress", (event) => {
             if (event.key === "Enter") {
-                sendMessage();
+                event.preventDefault();
+                sendCalculatorMessage();
             }
         });
     }
+
+    // Support Enter key for dynamically inserted calculator assistant input
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && document.activeElement?.id === "calculator-user-input") {
+            event.preventDefault();
+            sendCalculatorMessage();
+        }
+    });
 });

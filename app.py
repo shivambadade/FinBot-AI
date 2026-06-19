@@ -140,6 +140,12 @@ def preprocess_text(text):
     return " ".join(filtered_words)
 
 
+def extract_numbers(message, allow_decimal=True):
+    pattern = r'\d+\.?\d*' if allow_decimal else r'\d+'
+    values = re.findall(pattern, message)
+    return [float(value) for value in values]
+
+
 app = Flask(__name__)
 
 @app.route("/save-calculation", methods=["POST"])
@@ -504,16 +510,16 @@ def chat():
 
     if intent == "sip":
 
-        numbers = re.findall(r'\d+', message)
+        numbers = extract_numbers(message)
 
 
         if len(numbers) >= 3:
 
-            monthly_investment = int(numbers[0])
+            monthly_investment = numbers[0]
 
-            years = int(numbers[1])
+            years = numbers[1]
 
-            annual_rate = int(numbers[2])
+            annual_rate = numbers[2]
 
 
             result = calculate_sip(
@@ -568,16 +574,16 @@ Please provide:
 
     elif intent == "emi":
 
-        numbers = re.findall(r'\d+', message)
+        numbers = extract_numbers(message)
 
 
         if len(numbers) >= 3:
 
-            loan_amount = int(numbers[0])
+            loan_amount = numbers[0]
 
-            years = int(numbers[1])
+            annual_rate = numbers[1]
 
-            annual_rate = int(numbers[2])
+            years = numbers[2]
 
 
             result = calculate_emi(
@@ -628,39 +634,55 @@ Please provide:
 
     elif intent == "brokerage":
 
-        numbers = re.findall(r'\d+\.?\d*', message)
+        numbers = extract_numbers(message)
 
 
-        if len(numbers) >= 2:
+        if len(numbers) >= 4:
 
-            trade_amount = float(numbers[0])
+            buy_price = numbers[0]
 
-            brokerage_rate = float(numbers[1])
+            sell_price = numbers[1]
+
+            quantity = numbers[2]
+
+            brokerage_percent = numbers[3]
 
 
             result = calculate_brokerage(
 
-                trade_amount,
+                buy_price,
 
-                brokerage_rate
+                sell_price,
+
+                quantity,
+
+                brokerage_percent
             )
+
+            trade_amount = (buy_price * quantity) + (sell_price * quantity)
 
 
             bot_reply = f"""
 
 Based on your brokerage calculation:
 
-• Gross Profit: ₹{result['gross_profit']}
+• Gross P&L: ₹{result['gross_profit']}
 
 • Brokerage Charges: ₹{result['brokerage']}
 
-• Net Profit: ₹{result['net_profit']}
+• STT: ₹{result['stt']}
+
+• GST: ₹{result['gst']}
+
+• Total Charges: ₹{result['total_charges']}
+
+• Net P&L: ₹{result['net_profit']}
 
 """
 
             ml_prediction = get_ml_recommendation(
                 trade_amount,
-                5,
+                brokerage_percent,
                 "brokerage"
             )
 
@@ -683,16 +705,16 @@ Please provide:
 
     elif intent == "lumpsum":
 
-        numbers = re.findall(r'\d+', message)
+        numbers = extract_numbers(message)
 
 
         if len(numbers) >= 3:
 
-            investment = int(numbers[0])
+            investment = numbers[0]
 
-            annual_rate = int(numbers[1])
+            years = numbers[1]
 
-            years = int(numbers[2])
+            annual_rate = numbers[2]
 
 
             result = calculate_lumpsum(
