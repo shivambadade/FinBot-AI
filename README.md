@@ -113,9 +113,9 @@ cd FinBot-AI
 ```bash
 python -m venv .venv
 # Windows
-.venv\Scripts\activate
+.\venv\Scripts\Activate
 # macOS / Linux
-source  .\venv\Scripts\Activate
+source .venv/bin/activate
 ```
 
 3. Install dependencies
