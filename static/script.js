@@ -410,10 +410,10 @@ async function openHistory() {
                     max-width: 1000px;
                 ">
                     <h3>You:</h3>
-                    <p>${chat[0]}</p>
+                    <p>${escapeHTML(chat[0])}</p>
                     <br>
                     <h3>FinBot AI:</h3>
-                    <p>${chat[1]}</p>
+                    <p>${escapeHTML(chat[1])}</p>
                 </div>
             `;
         });
@@ -649,7 +649,7 @@ function openSIPPanel(){
                         </div>
                     </div>
 
-                    <button class="calculate-btn" onclick="calculateSIP()">Calculate SIP</button>
+                    <button class="calculate-btn" id="calc-sip-btn" onclick="calculateSIP()">Calculate SIP</button>
                 </div>
 
                 <div class="sip-result-card calc-summary">
@@ -699,36 +699,67 @@ async function calculateSIP(){
     const requestPayload = { amount, years, return_rate: returnRate };
     console.log("[SIP] Sending calculation request:", requestPayload);
 
-    const response = await fetch("/calculate_sip", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestPayload)
-    });
+    const btn = document.getElementById("calc-sip-btn");
+    let originalText = "Calculate SIP";
+    if (btn) {
+        originalText = btn.innerText;
+        btn.innerText = "Calculating...";
+        btn.disabled = true;
+    }
 
-    const data = await response.json();
-    console.log("[SIP] /calculate_sip response:", data);
+    try {
+        const response = await fetch("/calculate_sip", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestPayload)
+        });
+        if (!response.ok) throw new Error("Calculation failed");
 
-    animateValue("future-value", prevValues.sip.future, data.future_value);
-    animateValue("total-invested", prevValues.sip.invested, data.total_investment);
-    animateValue("estimated-returns", prevValues.sip.returns, data.estimated_returns);
+        const data = await response.json();
+        console.log("[SIP] /calculate_sip response:", data);
 
-    const fVal = document.getElementById("future-value");
-    if(fVal) fVal.setAttribute("title", formatCurrency(data.future_value, true));
-    const tVal = document.getElementById("total-invested");
-    if(tVal) tVal.setAttribute("title", formatCurrency(data.total_investment, true));
-    const eVal = document.getElementById("estimated-returns");
-    if(eVal) eVal.setAttribute("title", formatCurrency(data.estimated_returns, true));
+        animateValue("future-value", prevValues.sip.future, data.future_value);
+        animateValue("total-invested", prevValues.sip.invested, data.total_investment);
+        animateValue("estimated-returns", prevValues.sip.returns, data.estimated_returns);
 
-    prevValues.sip = {
-        future: data.future_value,
-        invested: data.total_investment,
-        returns: data.estimated_returns
-    };
+        const fVal = document.getElementById("future-value");
+        if(fVal) fVal.setAttribute("title", formatCurrency(data.future_value, true));
+        const tVal = document.getElementById("total-invested");
+        if(tVal) tVal.setAttribute("title", formatCurrency(data.total_investment, true));
+        const eVal = document.getElementById("estimated-returns");
+        if(eVal) eVal.setAttribute("title", formatCurrency(data.estimated_returns, true));
 
-    const desc = document.querySelector(".sip-result-card .description");
-    if(desc) desc.innerText = `After ${years} years at ${returnRate}% p.a.`;
+        prevValues.sip = {
+            future: data.future_value,
+            invested: data.total_investment,
+            returns: data.estimated_returns
+        };
 
+        const desc = document.querySelector(".sip-result-card .description");
+        if(desc) desc.innerText = `After ${years} years at ${returnRate}% p.a.`;
+
+        updateSIPChart(amount, years, returnRate);
+
+        fetch("/save-calculation", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ calc_type: "SIP", amount, years, return_rate: returnRate, result: data.future_value })
+        }).catch(e => console.error("History save error:", e));
+
+    } catch (error) {
+        console.error("SIP Error:", error);
+        alert("Failed to calculate SIP. Please try again.");
+    } finally {
+        if (btn) {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    }
+}
+
+function updateSIPChart(amount, years, returnRate) {
     const ctx = document.getElementById("sipChart");
+    if(!ctx) return;
     if(sipChart) sipChart.destroy();
 
     const labels = [];
@@ -736,8 +767,19 @@ async function calculateSIP(){
     const yearlyData = [];
 
     for(let i = 1; i <= Number(years); i++){
-        const yearlyInvestment = Number(amount) * 12 * i;
-        const yearlyValue = yearlyInvestment * Math.pow((1 + Number(returnRate) / 100), i);
+        const months = i * 12;
+        const monthlyInvestment = Number(amount);
+        const monthlyRate = Number(returnRate) / 12 / 100;
+        const yearlyInvestment = monthlyInvestment * months;
+        let yearlyValue = 0;
+        
+        if (monthlyRate === 0) {
+            yearlyValue = yearlyInvestment;
+        } else {
+            yearlyValue = monthlyInvestment * (
+                (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate
+            ) * (1 + monthlyRate);
+        }
 
         labels.push(`Year ${i}`);
         investedData.push(yearlyInvestment.toFixed(0));
@@ -1911,3 +1953,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+function escapeHTML(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar) {
+        sidebar.classList.toggle("open");
+    }
+}

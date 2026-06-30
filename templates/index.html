@@ -5,212 +5,187 @@
 
     <title>FinBot AI</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="color-scheme" content="dark">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet"
-          href="{{ url_for('static',
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static',
           filename='style.css') }}?v=1.2.0">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <!-- SIDEBAR -->
+        <!-- SIDEBAR -->
 
-    <div class="sidebar animate-entrance">
+        <div class="sidebar animate-entrance">
 
-    <div class="logo-section">
+            <div class="logo-section">
 
-        <img src="{{ url_for('static',
+                <img src="{{ url_for('static',
         filename='images/bot.png') }}">
-
-        <div>
-
-            <h2>FinBot AI</h2>
-
-            <p>Your Finance Assistant</p>
-
-        </div>
-
-    </div>
-
-
-    <div class="sidebar-menu">
-
-        <div
-        id="dashboard-tab"
-        class="menu-item active"
-        onclick="openDashboard()"
->
-            🏠 Dashboard
-
-            <span>Overview & Insights</span>
-
-        </div>
-
-
-        <div
-        id="sip-tab"
-        class="menu-item"
-        onclick="openSIPPanel()"
->
-
-            📈 SIP Calculator
-
-            <span>Plan your wealth</span>
-
-        </div>
-
-
-        <div
-        id="emi-tab"
-        class="menu-item"
-        onclick="openEMIPanel()"
->
-
-            🏦 EMI Calculator
-
-            <span>Loan planning</span>
-
-        </div>
-
-
-        <div
-        id="lumpsum-tab"
-        class="menu-item"
-        onclick="openLumpsumPanel()"
->
-
-            💰 Lumpsum Calculator
-
-            <span>One-time investment</span>
-
-        </div>
-
-
-        <div
-        id="brokerage-tab"
-        class="menu-item"
-        onclick="openBrokeragePanel()">
-
-            📊 Brokerage Calculator
-
-            <span>Trading cost analysis</span>
-
-        </div>
-
-
-        <div 
-        id="history-tab"
-        class="menu-item"
-        onclick="openHistory()">
-
-            💬 Chat History
-
-            <span>Your conversations</span>
-
-        </div>
-
-
-
-
-    </div>
-
-</div>
-
-
-
-    <!-- CHAT SECTION -->
-
-    <div class="chat-section animate-entrance-delayed">
-
-    <div class="topbar">
-        <div id="topbar-header-container"></div>
-        <div class="profile-section">
-            <img src="{{ url_for('static', filename='images/bot.png') }}">
-        </div>
-    </div>
-
-        <!-- HEADER -->
-
-<div id="dashboard-home">
-
-        <div class="chat-header">
-
-            <div class="header-left">
-
-                <img class="hero-robot-img" src="{{ url_for('static',
-                filename='images/bot.png') }}"
-                alt="Bot">
 
                 <div>
 
-                    <h1>FinBot AI</h1>
+                    <h2>FinBot AI</h2>
 
-                    <p>Your Conversational Finance Assistant</p>
+                    <p>Your Finance Assistant</p>
 
                 </div>
 
             </div>
 
-        </div>
-</div>
 
-<!-- DYNAMIC DASHBOARD PANEL -->
+            <div class="sidebar-menu">
 
-<div id="dynamic-panel"></div>
+                <div id="dashboard-tab" class="menu-item active" onclick="openDashboard()">
+                    🏠 Dashboard
+
+                    <span>Overview & Insights</span>
+
+                </div>
 
 
-        <!-- CHAT AREA -->
+                <div id="sip-tab" class="menu-item" onclick="openSIPPanel()">
 
-<div id="main-content"></div>
+                    📈 SIP Calculator
 
-        <div id="chat-box">
+                    <span>Plan your wealth</span>
 
-            <div class="bot-message">
-                <p class="bot-greeting">👋 Hello! I’m FinBot AI.</p>
-                <p class="bot-intro">You can:</p>
-                <ul class="bot-list">
-                    <li>Calculate SIP</li>
-                    <li>Calculate EMI</li>
-                    <li>Check Brokerage</li>
-                    <li>Ask Finance Questions</li>
-                </ul>
+                </div>
+
+
+                <div id="emi-tab" class="menu-item" onclick="openEMIPanel()">
+
+                    🏦 EMI Calculator
+
+                    <span>Loan planning</span>
+
+                </div>
+
+
+                <div id="lumpsum-tab" class="menu-item" onclick="openLumpsumPanel()">
+
+                    💰 Lumpsum Calculator
+
+                    <span>One-time investment</span>
+
+                </div>
+
+
+                <div id="brokerage-tab" class="menu-item" onclick="openBrokeragePanel()">
+
+                    📊 Brokerage Calculator
+
+                    <span>Trading cost analysis</span>
+
+                </div>
+
+
+                <div id="history-tab" class="menu-item" onclick="openHistory()">
+
+                    💬 Chat History
+
+                    <span>Your conversations</span>
+
+                </div>
+
+
+
+
             </div>
 
         </div>
 
 
 
-        <!-- INPUT -->
+        <!-- CHAT SECTION -->
 
-        <div class="input-area">
+        <div class="chat-section animate-entrance-delayed">
 
-            <input type="text"
-                   id="user-input"
-                   placeholder="Ask something...">
+            <div class="topbar">
+                <div id="topbar-header-container"></div>
+                <div class="profile-section">
+                    <img src="{{ url_for('static', filename='images/bot.png') }}">
+                </div>
+            </div>
 
-            <button onclick="sendMessage()">
+            <!-- HEADER -->
 
-                Send
+            <div id="dashboard-home">
 
-            </button>
+                <div class="chat-header">
+
+                    <div class="header-left">
+
+                        <img class="hero-robot-img" src="{{ url_for('static',
+                filename='images/bot.png') }}" alt="Bot">
+
+                        <div>
+
+                            <h1>FinBot AI</h1>
+
+                            <p>Your Conversational Finance Assistant</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- DYNAMIC DASHBOARD PANEL -->
+
+            <div id="dynamic-panel"></div>
+
+
+            <!-- CHAT AREA -->
+
+            <div id="main-content"></div>
+
+            <div id="chat-box">
+
+                <div class="bot-message">
+                    <p class="bot-greeting">👋 Hello! I’m FinBot AI.</p>
+                    <p class="bot-intro">You can:</p>
+                    <ul class="bot-list">
+                        <li>Calculate SIP</li>
+                        <li>Calculate EMI</li>
+                        <li>Check Brokerage</li>
+                        <li>Ask Finance Questions</li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+
+            <!-- INPUT -->
+
+            <div class="input-area">
+
+                <input type="text" id="user-input" placeholder="Ask something...">
+
+                <button onclick="sendMessage()">
+
+                    Send
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
 
-
-<script src="{{ url_for('static',
-filename='script.js') }}?v=1.1.0"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=1.1.1"></script>
 
 </body>
+
 </html>
