@@ -176,4 +176,8 @@ Sample queries you can type in the chat or use via UI:
 
 ## Author
 
-- **Shivangi Kushwaha**
+
+
+
+
+
